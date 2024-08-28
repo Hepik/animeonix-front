@@ -12,7 +12,7 @@ const RootLayout: React.FC<RootLayoutPropsType> = ({ children }) => {
       suppressHydrationWarning
     >
       <Header />
-      <main className="">{children}</main>
+      <main className="py-4">{children}</main>
     </div>
   );
 };
