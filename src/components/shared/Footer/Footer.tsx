@@ -10,7 +10,7 @@ export const Footer = () => {
       <Link href="/" className="text-2xl font-bold cursor-pointer">
         AnimeOnix
       </Link>
-      <p className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2">
         Created by
         <a
           href="https://www.linkedin.com/in/vadym-vovk-a4b07a306/"
@@ -26,7 +26,7 @@ export const Footer = () => {
             />
           </div>
         </a>
-      </p>
+      </div>
     </footer>
   );
 };
