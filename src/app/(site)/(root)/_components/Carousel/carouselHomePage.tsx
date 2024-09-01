@@ -16,7 +16,7 @@ export const CarouselHomePage = () => {
         <CarouselContent className="ml-6">
           <CarouselItem className="md:basis-1/2 lg:basis-1/5">
             <div className="relative h-[200px] w-[200px] bg-white text-black rounded-lg overflow-hidden">
-              <a href="#">
+              <a href="/tittle">
                 <Image
                   src="/carousel/bleach.jpg"
                   alt="Bleach Image"
