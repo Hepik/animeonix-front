@@ -54,7 +54,7 @@ const ReviewsSectionItem = () => {
           <p>5</p>
         </div>
         <div>■■■□□ 8/10</div>
-        <a href="#">
+        <a href="/review">
           <Button className="border border-white rounded-lg py-8 px-4 text-xl hover:text-black hover:bg-white">
             Read more
           </Button>
