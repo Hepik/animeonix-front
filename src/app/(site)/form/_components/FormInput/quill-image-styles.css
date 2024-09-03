@@ -1,0 +1,25 @@
+.ql-editor {
+  min-height: 550px;
+}
+.ql-editor img {
+  max-width: 100%; /* Обмеження ширини зображення до ширини контейнера */
+  max-height: 500px; /* Обмеження висоти зображення */
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ql-editor img.ql-align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ql-editor img.ql-align-left {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.ql-editor img.ql-align-right {
+  margin-left: auto;
+  margin-right: 0;
+}
