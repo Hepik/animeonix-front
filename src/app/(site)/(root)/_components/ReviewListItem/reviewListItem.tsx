@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { ThumbsUp, ThumbsDown, Star } from "lucide-react";
+import Link from "next/link";
 
 export const ReviewListItem = () => {
   return (
@@ -12,14 +13,17 @@ export const ReviewListItem = () => {
       <div className="flex justify-between items-start">
         <div className="flex">
           <div className="relative h-[150px] w-[150px] rounded-lg overflow-hidden bg-gray-200">
-            <a href="#">
+            <Link href="/tittle" className="relative block w-full h-full">
               <Image
                 src="/carousel/bleach.jpg"
                 alt="Bleach Image"
-                layout="fill"
-                objectFit="cover"
+                fill={true}
+                sizes="15vw"
+                style={{
+                  objectFit: "cover",
+                }}
               />
-            </a>
+            </Link>
           </div>
           <div className="ml-4 w-[750px] max-h-[150px]">
             <p className="text-m line-clamp-5">

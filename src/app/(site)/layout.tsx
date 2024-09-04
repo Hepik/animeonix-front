@@ -8,10 +8,7 @@ interface RootLayoutPropsType {
 
 const RootLayout: React.FC<RootLayoutPropsType> = ({ children }) => {
   return (
-    <div
-      className="flex flex-col min-h-screen justify-center max-w-[1400px] mx-auto px-4 "
-      suppressHydrationWarning
-    >
+    <div className="flex flex-col min-h-screen justify-center max-w-[1400px] mx-auto px-4 ">
       <Header />
       <main className="flex-1 py-4">{children}</main>
       <Footer />

@@ -12,7 +12,7 @@ export const Footer = () => {
       </Link>
       <div className="flex items-center space-x-2">
         Created by
-        <a
+        <Link
           href="https://www.linkedin.com/in/vadym-vovk-a4b07a306/"
           target="_blank"
           rel="noopener noreferrer"
@@ -21,11 +21,14 @@ export const Footer = () => {
             <Image
               src="/linkedin.jpg"
               alt="LinkedIn Logo"
-              layout="fill"
-              objectFit="cover"
+              fill={true}
+              sizes="20vw"
+              style={{
+                objectFit: "cover",
+              }}
             />
           </div>
-        </a>
+        </Link>
       </div>
     </footer>
   );
