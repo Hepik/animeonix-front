@@ -1,57 +1,56 @@
 "use client";
 
-import React, { useState } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import "./quill-image-styles.css";
+import React, { useEffect, useRef, useState } from "react";
+import "quill/dist/quill.snow.css";
 import { Button } from "@/components/ui/button";
+import "./quill-image-styles.css";
 
 const FormInput = () => {
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState<string>("");
+  const quillRef = useRef<HTMLDivElement | null>(null);
+  const quillInstance = useRef<any | null>(null);
 
-  const modules = {
-    toolbar: [
-      [{ font: [] }],
-      [{ size: [] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ align: [] }],
-      ["link", "image"],
-      ["clean"],
-    ],
-    clipboard: {
-      matchVisual: false,
-    },
+  useEffect(() => {
+    if (typeof window !== "undefined" && quillRef.current) {
+      import("quill").then((Quill) => {
+        if (!quillInstance.current && quillRef.current) {
+          quillInstance.current = new Quill.default(quillRef.current, {
+            theme: "snow",
+            placeholder: "Write something amazing...",
+            modules: {
+              toolbar: [
+                [{ font: [] }],
+                [{ size: [] }],
+                ["bold", "italic", "underline", "strike", "blockquote"],
+                [{ list: "ordered" }, { list: "bullet" }],
+                [{ align: [] }],
+                ["link", "image"],
+                ["clean"],
+              ],
+            },
+          });
+          quillInstance.current.on("text-change", () => {
+            setContent(quillInstance.current?.root.innerHTML || "");
+          });
+        }
+      });
+    }
+  }, []);
+
+  const handleSubmit = () => {
+    console.log("Content:", content);
   };
+
   return (
     <div className="flex flex-col">
       <div className="flex flex-col min-h-[600px] overflow-hidden p-4 rounded-lg border border-gray-300 bg-white">
-        <ReactQuill
-          theme="snow"
-          formats={[
-            "font",
-            "size",
-            "bold",
-            "italic",
-            "underline",
-            "strike",
-            "blockquote",
-            "list",
-            "bullet",
-
-            "indent",
-            "align",
-            "link",
-            "image",
-          ]}
-          placeholder="Write something amazing..."
-          modules={modules}
-          onChange={setContent}
-          value={content}
-        />
+        <div ref={quillRef} className="quill-editor" />
       </div>
       <div className="flex pt-2 justify-end">
-        <Button className="border border-white rounded-lg py-6 px-3 text-xl hover:text-black hover:bg-white">
+        <Button
+          className="border border-white rounded-lg py-6 px-3 text-xl hover:text-black hover:bg-white"
+          onClick={handleSubmit}
+        >
           Send
         </Button>
       </div>

@@ -7,9 +7,9 @@ import Link from "next/link";
 export const ReviewListItem = () => {
   return (
     <div className="bg-gray-700 rounded-lg text-white border shadow-sm px-2 pb-2 w-[1050px] mb-4">
-      <a href="#" className="text-xl hover:text-blue-500">
+      <Link href="#" className="text-xl hover:text-blue-500">
         Bleach
-      </a>
+      </Link>
       <div className="flex justify-between items-start">
         <div className="flex">
           <div className="relative h-[150px] w-[150px] rounded-lg overflow-hidden bg-gray-200">
@@ -37,9 +37,9 @@ export const ReviewListItem = () => {
               discovers that his newfound powers carry great responsibility and
               even greater danger.
             </p>
-            <a href="#" className="text-blue-500">
+            <Link href="#" className="text-blue-500">
               Read more...
-            </a>
+            </Link>
           </div>
         </div>
         <div className="flex flex-col items-end space-y-1">

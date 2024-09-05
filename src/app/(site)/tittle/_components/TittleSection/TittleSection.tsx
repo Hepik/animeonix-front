@@ -32,11 +32,11 @@ const TittleSection = () => {
           <p>5</p>
           <div className="pl-2">■■■□□ 8/10</div>
         </div>
-        <a href="/form">
+        <Link href="/form">
           <Button className="border border-white rounded-lg py-8 px-4 text-xl hover:text-black hover:bg-white">
             Write a review
           </Button>
-        </a>
+        </Link>
       </div>
       <div className="flex flex-col space-y-2">
         <div className="border border-white px-4 py-2 rounded-lg">
