@@ -62,9 +62,6 @@ export const ReviewList = () => {
     <div className="max-w-[1200px]">
       {data?.reviews.map((review: any, index: number) => (
         <div key={review.id} className="flex items-center space-x-2">
-          <span className="font-bold text-gray-500">
-            {(page - 1) * limit + index + 1}.
-          </span>
           <ReviewListItem />
         </div>
       ))}

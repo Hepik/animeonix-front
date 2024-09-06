@@ -10,8 +10,16 @@ const TittleSection = () => {
     <div className="flex flex-col gap-2 text-white">
       <div className="flex flex-row items-center space-x-2">
         <div className="relative h-[70px] w-[70px] rounded-full overflow-hidden bg-gray-200 mb-2">
-          <Link href="#">
-            <Image src="/user.jpg" alt="User Image" fill objectFit="cover" />
+          <Link href="/#" className="relative block w-full h-full">
+            <Image
+              src="/user.jpg"
+              alt="User Image"
+              fill={true}
+              sizes="20vw"
+              style={{
+                objectFit: "cover",
+              }}
+            />
           </Link>
         </div>
         <Link

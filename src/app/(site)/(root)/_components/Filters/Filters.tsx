@@ -53,6 +53,7 @@ export const Filters = () => {
     <div className="flex flex-col w-full bg-gray-700 text-white border rounded-lg p-4 space-y-4">
       <div>
         <Select
+          instanceId="genres-select"
           isMulti
           options={genresOptions}
           value={selectedGenres}
@@ -65,6 +66,7 @@ export const Filters = () => {
       </div>
       <div>
         <Select
+          instanceId="year-select"
           options={yearsOptions}
           value={selectedYear}
           onChange={handleYearChange}
