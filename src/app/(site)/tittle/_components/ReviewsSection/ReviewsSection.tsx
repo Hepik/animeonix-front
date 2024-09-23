@@ -3,28 +3,35 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import ReviewsSectionItem from "../ReviewsSectionItem/ReviewsSectionItem";
+import { api } from "@/utils/api/api";
 
-const mockReviews = Array.from({ length: 183 }, (_, index) => ({
-  id: index + 1,
-  content: `Review content ${index + 1}`,
-}));
+interface Review {
+  id: number;
+  content: string;
+  likes: number;
+  dislikes: number;
+}
+
+interface ReviewsResponse {
+  reviews: Review[];
+  total: number;
+}
 
 const fetchReviews = async (page: number, limit: number) => {
-  const startIndex = (page - 1) * limit;
-  const endIndex = startIndex + limit;
-  return {
-    reviews: mockReviews.slice(startIndex, endIndex),
-    total: mockReviews.length,
-  };
+  const response = await api.get<ReviewsResponse>(
+    `/reviews?page=${page}&limit=${limit}`
+  );
+  return response.data;
 };
 
 const ReviewsSection = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const { data } = useQuery({
+  const { data } = useQuery<ReviewsResponse>({
     queryKey: ["reviews", page],
     queryFn: () => fetchReviews(page, limit),
+    placeholderData: undefined,
     staleTime: 5000,
   });
 
@@ -61,12 +68,12 @@ const ReviewsSection = () => {
   return (
     <div className="flex flex-col py-2">
       <p className="text-white pl-4 pb-2 text-xl">
-        Reviews: {mockReviews.length}
+        Reviews: {data?.total || 0}
       </p>
       <div className="space-y-4">
-        {data?.reviews.map((review: any, index: number) => (
+        {data?.reviews.map((review) => (
           <div key={review.id} className="flex items-center space-x-2">
-            <ReviewsSectionItem />
+            <ReviewsSectionItem {...review} />
           </div>
         ))}
         <div className="flex justify-center space-x-2">

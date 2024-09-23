@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "quill/dist/quill.snow.css";
 import { Button } from "@/components/ui/button";
 import "./quill-image-styles.css";
+import { api } from "@/utils/api/api";
 
 const FormInput = () => {
   const [content, setContent] = useState<string>("");
@@ -37,8 +38,15 @@ const FormInput = () => {
     }
   }, []);
 
-  const handleSubmit = () => {
-    console.log("Content:", content);
+  const handleSubmit = async () => {
+    try {
+      const response = await api.post("/reviews", {
+        content,
+      });
+      console.log("Server response:", response.data);
+    } catch (error) {
+      console.error("Error sending content:", error);
+    }
   };
 
   return (
