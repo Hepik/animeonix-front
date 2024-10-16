@@ -4,12 +4,18 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import ReviewsSectionItem from "../ReviewsSectionItem/ReviewsSectionItem";
 import { api } from "@/utils/api/api";
+import { Title } from "../../[slug]/page";
+
+interface ReviewSectionProps {
+  data: Title | null;
+}
 
 interface Review {
   id: number;
   content: string;
   likes: number;
   dislikes: number;
+  title_id: number;
 }
 
 interface ReviewsResponse {
@@ -17,20 +23,24 @@ interface ReviewsResponse {
   total: number;
 }
 
-const fetchReviews = async (page: number, limit: number) => {
+const fetchReviews = async (
+  page: number,
+  limit: number,
+  title_id: number | undefined
+) => {
   const response = await api.get<ReviewsResponse>(
-    `/reviews?page=${page}&limit=${limit}`
+    `/reviews/${title_id}?page=${page}&limit=${limit}`
   );
   return response.data;
 };
 
-const ReviewsSection = () => {
+const ReviewsSection: React.FC<ReviewSectionProps> = ({ data: titleData }) => {
   const [page, setPage] = useState(1);
   const limit = 10;
 
   const { data } = useQuery<ReviewsResponse>({
-    queryKey: ["reviews", page],
-    queryFn: () => fetchReviews(page, limit),
+    queryKey: ["reviews", page, titleData?.id],
+    queryFn: () => fetchReviews(page, limit, titleData?.id),
     placeholderData: undefined,
     staleTime: 5000,
   });
@@ -64,7 +74,6 @@ const ReviewsSection = () => {
 
     return pages;
   };
-
   return (
     <div className="flex flex-col py-2">
       <p className="text-white pl-4 pb-2 text-xl">
@@ -73,7 +82,7 @@ const ReviewsSection = () => {
       <div className="space-y-4">
         {data?.reviews.map((review) => (
           <div key={review.id} className="flex items-center space-x-2">
-            <ReviewsSectionItem {...review} />
+            <ReviewsSectionItem {...review} slug={titleData?.slug || ""} />
           </div>
         ))}
         <div className="flex justify-center space-x-2">

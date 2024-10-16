@@ -11,6 +11,8 @@ interface TitleProps {
   likes: number;
   dislikes: number;
   reviews: number;
+  image: string;
+  slug: string;
 }
 
 const ReviewListItem: React.FC<TitleProps> = ({
@@ -20,18 +22,23 @@ const ReviewListItem: React.FC<TitleProps> = ({
   likes,
   dislikes,
   reviews,
+  image,
+  slug,
 }) => {
   return (
     <div className="bg-gray-700 rounded-lg text-white border shadow-sm px-2 pb-2 w-[1050px] mb-4">
-      <Link href="#" className="text-xl hover:text-blue-500">
+      <Link href={`/tittle/${slug}`} className="text-xl hover:text-blue-500">
         {name}
       </Link>
       <div className="flex justify-between items-start">
         <div className="flex">
           <div className="relative h-[150px] w-[150px] rounded-lg overflow-hidden bg-gray-200">
-            <Link href="/tittle" className="relative block w-full h-full">
+            <Link
+              href={`/tittle/${slug}`}
+              className="relative block w-full h-full"
+            >
               <Image
-                src="/carousel/bleach.jpg"
+                src={image}
                 alt="Bleach Image"
                 fill={true}
                 sizes="15vw"
@@ -43,7 +50,7 @@ const ReviewListItem: React.FC<TitleProps> = ({
           </div>
           <div className="ml-4 w-[750px] max-h-[150px]">
             <p className="text-m line-clamp-5">{description}</p>
-            <Link href="#" className="text-blue-500">
+            <Link href={`/tittle/${slug}`} className="text-blue-500">
               Read more...
             </Link>
           </div>

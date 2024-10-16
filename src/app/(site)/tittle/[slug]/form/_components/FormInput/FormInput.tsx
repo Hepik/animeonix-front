@@ -4,9 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import "quill/dist/quill.snow.css";
 import { Button } from "@/components/ui/button";
 import "./quill-image-styles.css";
-import { api } from "@/utils/api/api";
 
-const FormInput = () => {
+const FormInput = ({ onSubmit }: { onSubmit: (content: string) => void }) => {
   const [content, setContent] = useState<string>("");
   const quillRef = useRef<HTMLDivElement | null>(null);
   const quillInstance = useRef<any | null>(null);
@@ -37,18 +36,6 @@ const FormInput = () => {
       });
     }
   }, []);
-
-  const handleSubmit = async () => {
-    try {
-      const response = await api.post("/reviews", {
-        content,
-      });
-      console.log("Server response:", response.data);
-    } catch (error) {
-      console.error("Error sending content:", error);
-    }
-  };
-
   return (
     <div className="flex flex-col">
       <div className="flex flex-col min-h-[600px] overflow-hidden p-4 rounded-lg border border-gray-300 bg-white">
@@ -57,7 +44,7 @@ const FormInput = () => {
       <div className="flex pt-2 justify-end">
         <Button
           className="border border-white rounded-lg py-6 px-3 text-xl hover:text-black hover:bg-white"
-          onClick={handleSubmit}
+          onClick={() => onSubmit(content)}
         >
           Send
         </Button>
