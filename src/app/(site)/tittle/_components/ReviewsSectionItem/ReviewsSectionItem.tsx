@@ -11,6 +11,7 @@ interface ReviewProps {
   content: string;
   likes: number;
   dislikes: number;
+  slug: string;
 }
 
 const ReviewsSectionItem: React.FC<ReviewProps> = ({
@@ -18,6 +19,7 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
   content,
   likes,
   dislikes,
+  slug,
 }) => {
   return (
     <div className="flex flex-row py-2 mx-2 bg-gray-700 border border-white rounded-lg text-white px-2 space-x-2">
@@ -42,9 +44,10 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
           {"user: " + id}
         </Link>
       </div>
-      <div className="w-full px-2 line-clamp-6 text-m max-h-[160px] min-w-[970px]">
-        {content}
-      </div>
+      <div
+        dangerouslySetInnerHTML={{ __html: content }}
+        className="w-full px-2 line-clamp-6 text-m max-h-[160px] min-w-[970px]"
+      ></div>
       <div className="flex flex-col items-center space-y-1 w-[200px] pt-4 pb-2">
         <div className="flex space-x-1 text-m">
           <p>{likes}</p>
@@ -54,7 +57,7 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
           <p>{dislikes}</p>
         </div>
         <div>■■■□□ {((likes * 10) / (likes + dislikes)).toFixed(2)}/10</div>
-        <Link href="/review">
+        <Link href={`/tittle/${slug}/review/${id}`}>
           <Button className="border border-white rounded-lg py-8 px-4 text-xl hover:text-black hover:bg-white">
             Read more
           </Button>

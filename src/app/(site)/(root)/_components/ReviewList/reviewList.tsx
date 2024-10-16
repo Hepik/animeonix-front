@@ -13,6 +13,8 @@ interface Title {
   likes: number;
   dislikes: number;
   reviews: number;
+  image: string;
+  slug: string;
 }
 
 interface TitlesResponse {
