@@ -6,8 +6,8 @@ import Image from "next/image";
 
 export const Footer = () => {
   return (
-    <footer className="justify-between flex h-16 w-[100%] shrink-0 items-center md:px-6 bg-gray-900 text-white rounded-t-lg shadow-md">
-      <Link href="/" className="text-2xl font-bold cursor-pointer">
+    <footer className="justify-between flex h-16 w-[100%] shrink-0 items-center px-6 bg-gray-900 text-white rounded-t-lg shadow-md">
+      <Link href="/" className="text-xl md:text-2xl font-bold cursor-pointer">
         AnimeOnix
       </Link>
       <div className="flex items-center space-x-2">

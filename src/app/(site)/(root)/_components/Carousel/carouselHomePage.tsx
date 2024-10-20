@@ -54,10 +54,10 @@ export const CarouselHomePage = () => {
   return (
     <div className="border-b pb-4 ">
       <Carousel>
-        <CarouselContent className="ml-6">
+        <CarouselContent className="space-x-6">
           {description?.map((titles) => (
-            <CarouselItem key={titles.id} className="md:basis-1/2 lg:basis-1/5">
-              <div className="relative h-[200px] w-[200px] bg-white text-black rounded-lg overflow-hidden">
+            <CarouselItem key={titles.id} className="basis-1/1">
+              <div className="relative h-[200px] w-[170px] min-[350px]:w-[200px] bg-white text-black rounded-lg overflow-hidden">
                 <Link
                   href={`/tittle/${titles.slug}`}
                   className="relative block w-full h-full"
