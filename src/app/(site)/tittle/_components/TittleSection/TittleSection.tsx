@@ -49,9 +49,9 @@ const TittleSection = ({ slug }: { slug: string }) => {
   }
 
   return (
-    <div className="flex text-white gap-4">
-      <div className="flex flex-col max-w-[370px] w-full max-h-[580px] items-center border rounded-lg space-y-2 py-2 px-4">
-        <div className="relative h-[400px] w-[350px] rounded-lg overflow-hidden bg-gray-200 ">
+    <div className="flex max-[580px]:flex-col max-[580px]:items-center text-white gap-4">
+      <div className="flex flex-col max-w-[370px] w-full h-full items-center border rounded-lg space-y-2 py-2 px-4">
+        <div className="relative h-[250px] w-[200px] lg:h-[400px] lg:w-[350px] rounded-lg overflow-hidden bg-gray-200 ">
           <Link
             href={`/tittle/${slug}`}
             className="relative block w-full h-full"
@@ -67,33 +67,56 @@ const TittleSection = ({ slug }: { slug: string }) => {
             />
           </Link>
         </div>
-        <p className="text-3xl text-center">{title.name}</p>
-        <div className="flex items-end space-x-1 text-xl">
+        <p className="text-xl sm:text-2xl lg:text-3xl text-center">
+          {title.name}
+        </p>
+        <div className="flex items-end space-x-1 text-base sm:text-lg lg:text-xl">
           <p>{title.likes}</p>
           <ThumbsUp />
           <p>/</p>
           <ThumbsDown />
           <p>{title.dislikes}</p>
-          <div className="pl-2">
-            ■■■□□{" "}
+          <div className="pl-3">
+            {" "}
             {((title.likes * 10) / (title.likes + title.dislikes)).toFixed(2)}
             /10
           </div>
         </div>
         <Link href={`/tittle/${slug}/form`}>
-          <Button className="border border-white rounded-lg py-8 px-4 text-xl hover:text-black hover:bg-white">
+          <Button className="border border-white rounded-lg py-4 lg:py-8 px-4 text-base lg:text-xl hover:text-black hover:bg-white">
             Write a review
           </Button>
         </Link>
       </div>
       <div className="flex flex-col space-y-2">
         <div className="border border-white px-4 py-2 rounded-lg">
-          <p>{title.description}</p>
+          <p className="text-m lg:text-lg">{title.description}</p>
         </div>
-        <div className="flex justify-center border border-white px-4 py-4 rounded-lg">
+        <div className="flex justify-center border border-white px-2 py-4 rounded-lg">
           <iframe
-            width="560"
+            className="hidden lg:block"
+            width="540"
             height="315"
+            src={title.trailer}
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          ></iframe>
+          <iframe
+            className="hidden sm:block lg:hidden"
+            width="320"
+            height="280"
+            src={title.trailer}
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          ></iframe>
+          <iframe
+            className="sm:hidden"
+            width="250"
+            height="170"
             src={title.trailer}
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
