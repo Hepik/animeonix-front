@@ -22,7 +22,7 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
   slug,
 }) => {
   return (
-    <div className="flex flex-row py-2 mx-2 bg-gray-700 border border-white rounded-lg text-white px-2 space-x-2">
+    <div className="flex flex-row max-[580px]:flex-col max-[580px]:items-center w-full py-2 bg-gray-700 border border-white rounded-lg text-white px-2 space-x-2">
       <div className="flex flex-col max-w-[120px] items-center space-y-2 px-2  pt-2">
         <div className="relative h-[100px] w-[100px] rounded-full overflow-hidden bg-gray-200">
           <Link href="/#" className="relative block w-full h-full">
@@ -46,7 +46,7 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
       </div>
       <div
         dangerouslySetInnerHTML={{ __html: content }}
-        className="w-full px-2 line-clamp-6 text-m max-h-[160px] min-w-[970px]"
+        className="w-full px-2 line-clamp-6 text-m max-h-[160px]  break-words"
       ></div>
       <div className="flex flex-col items-center space-y-1 w-[200px] pt-4 pb-2">
         <div className="flex space-x-1 text-m">
@@ -58,7 +58,7 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
         </div>
         <div>■■■□□ {((likes * 10) / (likes + dislikes)).toFixed(2)}/10</div>
         <Link href={`/tittle/${slug}/review/${id}`}>
-          <Button className="border border-white rounded-lg py-8 px-4 text-xl hover:text-black hover:bg-white">
+          <Button className="border border-white max-[580px]:text-base max-[580px]:py-6 rounded-lg py-8 px-4 text-xl hover:text-black hover:bg-white">
             Read more
           </Button>
         </Link>

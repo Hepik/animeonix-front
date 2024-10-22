@@ -38,10 +38,10 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
       <div className="flex flex-col pl-2 bg-white text-black rounded-lg p-2">
         <div
           dangerouslySetInnerHTML={{ __html: review.content }}
-          className="whitespace-pre-wrap"
+          className="whitespace-pre-wrap break-words"
         ></div>
       </div>
-      <div className="flex justify-end space-x-1 text-xl">
+      <div className="flex justify-end space-x-1 text-base sm:text-xl">
         <p>{review.likes}</p>
         <ThumbsUp />
         <p>/</p>
