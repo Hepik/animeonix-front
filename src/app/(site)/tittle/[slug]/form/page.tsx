@@ -41,7 +41,7 @@ const ReviewPage: React.FC<AnouncementPagePropsType> = ({
   const { mutateAsync: addReview } = useMutation({
     mutationKey: ["titleId"],
     mutationFn: (content: string) =>
-      api.post(`/reviews/${title?.id}`, { content, title_id: title?.id }),
+      api.post(`/reviews`, { content, title_id: title?.id }),
   });
 
   const handleTitleInputSubmit = (content: string) => {

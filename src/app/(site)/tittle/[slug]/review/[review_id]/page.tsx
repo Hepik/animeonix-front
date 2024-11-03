@@ -48,9 +48,7 @@ const ReviewPage: React.FC<AnouncementPagePropsType> = ({
   }, [slug]);
   useEffect(() => {
     const fetchReviews = async ({ review_id }: { review_id: number }) => {
-      const responseReview = await api.get<Review>(
-        `/reviews/review_id/${review_id}`
-      );
+      const responseReview = await api.get<Review>(`/reviews/${review_id}`);
       setReview(responseReview.data);
     };
     fetchReviews({ review_id });
