@@ -29,7 +29,7 @@ const fetchReviews = async (
   title_id: number | undefined
 ) => {
   const response = await api.get<ReviewsResponse>(
-    `/reviews/${title_id}?page=${page}&limit=${limit}`
+    `/reviews?page=${page}&limit=${limit}&title_id=${title_id}`
   );
   return response.data;
 };
