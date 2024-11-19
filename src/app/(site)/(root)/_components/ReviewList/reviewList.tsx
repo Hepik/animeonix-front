@@ -2,29 +2,41 @@
 
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { ReviewListItem } from "../ReviewListItem/reviewListItem";
+import ReviewListItem from "../ReviewListItem/reviewListItem";
+import { api } from "@/utils/api/api";
 
-const mockReviews = Array.from({ length: 183 }, (_, index) => ({
-  id: index + 1,
-  content: `Review content ${index + 1}`,
-}));
+interface Title {
+  id: number;
+  name: string;
+  description: string;
+  trailer: string;
+  likes: number;
+  dislikes: number;
+  reviews: number;
+  image: string;
+  slug: string;
+}
 
-const fetchReviews = async (page: number, limit: number) => {
-  const startIndex = (page - 1) * limit;
-  const endIndex = startIndex + limit;
-  return {
-    reviews: mockReviews.slice(startIndex, endIndex),
-    total: mockReviews.length,
-  };
+interface TitlesResponse {
+  titles: Title[];
+  total: number;
+}
+
+const fetchTitles = async (page: number, limit: number) => {
+  const response = await api.get<TitlesResponse>(
+    `/titles?page=${page}&limit=${limit}`
+  );
+  return response.data;
 };
 
 export const ReviewList = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const { data } = useQuery({
-    queryKey: ["reviews", page],
-    queryFn: () => fetchReviews(page, limit),
+  const { data } = useQuery<TitlesResponse>({
+    queryKey: ["titles", page],
+    queryFn: () => fetchTitles(page, limit),
+    placeholderData: undefined,
     staleTime: 5000,
   });
 
@@ -60,12 +72,11 @@ export const ReviewList = () => {
 
   return (
     <div className="max-w-[1200px]">
-      {data?.reviews.map((review: any, index: number) => (
-        <div key={review.id} className="flex items-center space-x-2">
-          <ReviewListItem />
+      {data?.titles.map((titles) => (
+        <div key={titles.id} className="flex items-center space-x-2">
+          <ReviewListItem {...titles} />
         </div>
       ))}
-
       <div className="flex justify-center space-x-2">
         <button
           onClick={() => setPage((old) => Math.max(old - 1, 1))}

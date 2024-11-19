@@ -4,18 +4,43 @@ import Image from "next/image";
 import { ThumbsUp, ThumbsDown, Star } from "lucide-react";
 import Link from "next/link";
 
-export const ReviewListItem = () => {
+interface TitleProps {
+  id: number;
+  name: string;
+  description: string;
+  likes: number;
+  dislikes: number;
+  reviews: number;
+  image: string;
+  slug: string;
+}
+
+const ReviewListItem: React.FC<TitleProps> = ({
+  id,
+  name,
+  description,
+  likes,
+  dislikes,
+  reviews,
+  image,
+  slug,
+}) => {
   return (
-    <div className="bg-gray-700 rounded-lg text-white border shadow-sm px-2 pb-2 w-[1050px] mb-4">
-      <Link href="#" className="text-xl hover:text-blue-500">
-        Bleach
-      </Link>
+    <div className="bg-gray-700 rounded-lg text-white border shadow-sm px-2 pb-2 w-full mb-4">
+      <div className="flex justify-between">
+        <Link href={`/tittle/${slug}`} className="text-xl hover:text-blue-500">
+          {name}
+        </Link>
+      </div>
       <div className="flex justify-between items-start">
-        <div className="flex">
-          <div className="relative h-[150px] w-[150px] rounded-lg overflow-hidden bg-gray-200">
-            <Link href="/tittle" className="relative block w-full h-full">
+        <div className="flex max-sm:flex-col">
+          <div className="relative min-h-[150px] min-w-[150px] max-sm:h-[150px] max-sm:w-[150px] max-sm:mx-auto rounded-lg overflow-hidden bg-gray-200">
+            <Link
+              href={`/tittle/${slug}`}
+              className="relative block w-full h-full"
+            >
               <Image
-                src="/carousel/bleach.jpg"
+                src={image}
                 alt="Bleach Image"
                 fill={true}
                 sizes="15vw"
@@ -25,37 +50,41 @@ export const ReviewListItem = () => {
               />
             </Link>
           </div>
-          <div className="ml-4 w-[750px] max-h-[150px]">
-            <p className="text-m line-clamp-5">
-              Bleach is an action-packed anime that immerses you in a world
-              where the line between life and death is not clear at all. The
-              film follows the journey of Ichigo Kurosaki, a high school student
-              with the rare ability to see ghosts. His life changes dramatically
-              when he meets a mysterious woman named Rukia, who introduces him
-              to the Society of Souls, a hidden realm of powerful warriors and
-              sinister spirits. As Ichigo becomes embroiled in battles, he
-              discovers that his newfound powers carry great responsibility and
-              even greater danger.
-            </p>
-            <Link href="#" className="text-blue-500">
-              Read more...
-            </Link>
+          <div className="ml-4 max-w-[800px] max-h-[150px]">
+            <p className="text-m line-clamp-5">{description}</p>
+            <div className="flex justify-between">
+              <Link href={`/tittle/${slug}`} className="text-blue-500">
+                Read more...
+              </Link>
+              <div className="flex md:hidden items-end text-xs space-x-1">
+                <div className="text-sm">{likes}</div>
+                <ThumbsUp />
+                <p>/</p>
+                <ThumbsDown />
+                <div className="text-sm">{dislikes}</div>
+                <div className="text-sm pl-1 max-sm:hidden">
+                  reviews: {reviews}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="flex flex-col items-end space-y-1">
+        <div className="hidden md:flex flex-col items-end space-y-1">
           <div className="flex items-center space-x-1">
-            <div className="text-sm">17</div>
+            <div className="text-sm">{likes}</div>
             <ThumbsUp />
             <p>/</p>
             <ThumbsDown />
-            <div className="text-sm">5</div>
+            <div className="text-sm">{dislikes}</div>
           </div>
           <div className="flex">
             3.5 <Star />
           </div>
-          <div className="text-sm">5 reviews</div>
+          <div className="text-sm">reviews: {reviews}</div>
         </div>
       </div>
     </div>
   );
 };
+
+export default ReviewListItem;

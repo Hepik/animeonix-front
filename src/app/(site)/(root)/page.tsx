@@ -10,7 +10,7 @@ const HomePage = () => {
       <CarouselHomePage />
       <div className="flex lg:flex-row">
         <ReviewList />
-        <div className="w-full pl-4">
+        <div className="hidden md:flex h-full pl-4">
           <Filters />
         </div>
       </div>
