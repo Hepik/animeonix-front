@@ -1,15 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "../../ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "../../ui/sheet";
 import { ThemeToggle } from "../../ui/ThemeToggle";
 import { MenuIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Filters } from "@/app/(site)/(root)/_components/Filters/Filters";
+import { useUser } from "@/lib/context/UserContext";
 
 export const Header = () => {
   const [isMounted, setIsMounted] = useState<boolean>(false);
+
+  const { user, logout } = useUser();
 
   useEffect(() => {
     setIsMounted(true);
@@ -34,22 +38,45 @@ export const Header = () => {
           Ua
         </Button>
         <ThemeToggle />
-        <Button>
-          <Link
-            href="/login"
-            className="border border-white rounded-lg px-2 py-2 m-0"
-          >
-            Sign in
-          </Link>
-        </Button>
-        <Button>
-          <Link
-            href="/register"
-            className="border border-white rounded-lg px-2 py-2"
-          >
-            Sign Up
-          </Link>
-        </Button>
+        {user ? (
+          <div className="flex items-center gap-2">
+            <div className="relative h-[45px] w-[45px] rounded-full overflow-hidden bg-gray-200">
+              <Link
+                href={`/profile/${user.username}`}
+                className="relative block w-full h-full"
+              >
+                <Image
+                  src="/carousel/bleach.jpg"
+                  alt="Bleach Image"
+                  fill={true}
+                  sizes="15vw"
+                  style={{
+                    objectFit: "cover",
+                  }}
+                />
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <>
+            <Button>
+              <Link
+                href="/login"
+                className="border border-white rounded-lg px-2 py-2 m-0"
+              >
+                Sign in
+              </Link>
+            </Button>
+            <Button>
+              <Link
+                href="/register"
+                className="border border-white rounded-lg px-2 py-2"
+              >
+                Sign Up
+              </Link>
+            </Button>
+          </>
+        )}
       </div>
       <Sheet>
         <SheetTrigger asChild>

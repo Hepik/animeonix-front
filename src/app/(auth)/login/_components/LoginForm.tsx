@@ -15,12 +15,11 @@ import {
 } from "@/components/ui/form";
 
 const formSchema = z.object({
-  email: z
+  username: z
     .string()
-    .email({ message: "Invalid email address" })
-    .min(1, { message: "Invalid email address" }),
+    // .email({ message: "Invalid email address" })
+    .min(1, { message: "Invalid username" }),
   password: z.string().min(6, "Password is too short"),
-  isSupplier: z.boolean(),
 });
 
 interface RegisterFormPropsType {
@@ -31,9 +30,8 @@ export const LoginForm: React.FC<RegisterFormPropsType> = ({ onSubmit }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
-      isSupplier: false,
     },
   });
 
@@ -47,16 +45,16 @@ export const LoginForm: React.FC<RegisterFormPropsType> = ({ onSubmit }) => {
         <form className="mt-4" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
-            name="email"
+            name="username"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
                   <LabelInputContainer className="mt-2">
-                    <Label htmlFor="email">Email Address</Label>
+                    <Label htmlFor="username">username</Label>
                     <Input
-                      id="email"
-                      placeholder="youremail@gmail.com"
-                      type="email"
+                      id="username"
+                      placeholder="your username"
+                      type="username"
                       {...field}
                     />
                   </LabelInputContainer>
