@@ -1,6 +1,6 @@
 import { api } from "@/utils/api/api";
 
-class AuthService {
+class UserService {
   async login(username: string, password: string) {
     const response = await api
       .post<{
@@ -31,15 +31,16 @@ class AuthService {
           email: string;
           isActive: boolean;
           role: string;
+          avatar: string;
         };
       }>("/users/current", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       })
-      .then((data) => data.data.User);
+      .then((resp) => resp.data);
     return response;
   }
 }
 
-export const authService = new AuthService();
+export const userService = new UserService();

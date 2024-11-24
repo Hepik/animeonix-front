@@ -9,6 +9,7 @@ type User = {
   email: string;
   isActive: boolean;
   role: string;
+  avatar: string;
 } | null;
 
 type UserContextType = {
