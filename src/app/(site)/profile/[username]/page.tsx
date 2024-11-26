@@ -88,16 +88,19 @@ const ProfilePage: React.FC<ProfilePagePropsType> = ({
 
   const handlePasswordChange = async (data: z.infer<typeof formSchema>) => {
     try {
-      await api.post("/users/change-password", {
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword,
+      await api.patch("/users/change/password", {
+        current_password: data.currentPassword,
+        new_password: data.newPassword,
       });
-      alert("Password changed successfully!");
       setIsChangingPassword(false);
       form.reset();
-    } catch (err) {
+      alert("Password changed successfully!");
+    } catch (err: any) {
       console.error(err);
-      alert("Failed to change password. Please try again.");
+      alert(
+        err.response?.data?.detail ||
+          "Failed to change password. Please try again."
+      );
     }
   };
 
