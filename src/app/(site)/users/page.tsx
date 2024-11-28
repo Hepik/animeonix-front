@@ -15,6 +15,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function useDebounce(value: string, delay: number) {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -54,6 +61,13 @@ const fetchUsers = async (page: number, limit: number, username: string) => {
 
 const UsersPage = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [newUser, setNewUser] = useState({
+    username: "",
+    email: "",
+    password: "",
+    role: "",
+  });
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [usernameFilter, setUsernameFilter] = useState("");
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -71,6 +85,18 @@ const UsersPage = () => {
   }, [debouncedUsernameFilter, page, refetch]);
 
   const totalPages = data ? Math.ceil(data.total / limit) : 0;
+
+  const handleSaveNewUser = async () => {
+    try {
+      await api.post("/users", newUser);
+      alert("User created successfully");
+      setIsCreateDialogOpen(false);
+      refetch();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create user");
+    }
+  };
 
   const handleEdit = (user: User) => {
     setSelectedUser(user);
@@ -164,15 +190,24 @@ const UsersPage = () => {
   return (
     <div className="flex flex-col space-y-4 text-white">
       <Container className="flex flex-col gap-4 flex-1 py-4 bg-gray-900 rounded-lg border border-black">
-        <div className="flex space-x-4">
-          <h1 className="text-xl font-bold text-white">Users Table</h1>
-          <Input
-            id="username"
-            className="w-[30%]"
-            placeholder="Enter username"
-            value={usernameFilter}
-            onChange={(e) => setUsernameFilter(e.target.value)}
-          />
+        <div className="flex justify-between">
+          <div className="flex space-x-4">
+            <h1 className="text-xl font-bold text-white">Users Table</h1>
+            <Input
+              id="username"
+              className="w-[60%]"
+              placeholder="Enter username"
+              value={usernameFilter}
+              onChange={(e) => setUsernameFilter(e.target.value)}
+            />
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => setIsCreateDialogOpen(true)}
+            className="px-2 text-black dark:text-white justify-end"
+          >
+            Create user
+          </Button>
         </div>
         {!isLoading ? (
           <>
@@ -220,6 +255,60 @@ const UsersPage = () => {
           <p className="text-white">Loading users...</p>
         )}
       </Container>
+
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent>
+          <DialogHeader>Create User</DialogHeader>
+          <div className="space-y-4">
+            <Input
+              placeholder="Username"
+              value={newUser.username}
+              onChange={(e) =>
+                setNewUser({ ...newUser, username: e.target.value })
+              }
+            />
+            <Input
+              placeholder="Email"
+              value={newUser.email}
+              onChange={(e) =>
+                setNewUser({ ...newUser, email: e.target.value })
+              }
+            />
+            <Input
+              placeholder="Password"
+              type="password"
+              value={newUser.password}
+              onChange={(e) =>
+                setNewUser({ ...newUser, password: e.target.value })
+              }
+            />
+            <Select
+              value={newUser.role}
+              onValueChange={(value) => setNewUser({ ...newUser, role: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="user">User</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              className="px-2"
+              onClick={() => setIsCreateDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button className="px-2" onClick={handleSaveNewUser}>
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {selectedUser && (
         <Dialog open={true} onOpenChange={() => setSelectedUser(null)}>
