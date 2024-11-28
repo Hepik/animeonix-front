@@ -40,6 +40,13 @@ export const Header = () => {
         <ThemeToggle />
         {user ? (
           <div className="flex items-center gap-2">
+            {user.role === "admin" && (
+              <Button>
+                <Link href="/users" className="px-2 py-1">
+                  Users
+                </Link>
+              </Button>
+            )}
             <div className="relative h-[45px] w-[45px] rounded-full overflow-hidden bg-gray-200">
               <Link
                 href={`/profile/${user.username}`}
