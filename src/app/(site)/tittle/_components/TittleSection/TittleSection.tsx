@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,8 @@ const TittleSection = ({ slug }: { slug: string }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { user } = useUser();
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchTitle = async () => {
@@ -90,7 +93,7 @@ const TittleSection = ({ slug }: { slug: string }) => {
       try {
         await api.delete(`/titles/${id}`);
         alert("Title deleted successfully.");
-        window.location.reload();
+        router.replace("/");
       } catch (error) {
         console.error(error);
         alert("Failed to delete title.");
