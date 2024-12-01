@@ -6,6 +6,16 @@ import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { api } from "@/utils/api/api";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { useUser } from "@/lib/context/UserContext";
+import { Trash2, Pencil } from "lucide-react";
 
 interface Title {
   id: number;
@@ -19,9 +29,21 @@ interface Title {
   slug: string;
 }
 
+interface TitleEdit {
+  id: number;
+  name: string;
+  description: string;
+  trailer: string;
+  image: string;
+  slug: string;
+}
+
 const TittleSection = ({ slug }: { slug: string }) => {
   const [title, setTitle] = useState<Title | null>(null);
+  const [selectedTitle, setSelectedTitle] = useState<TitleEdit | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchTitle = async () => {
@@ -39,6 +61,42 @@ const TittleSection = ({ slug }: { slug: string }) => {
 
     fetchTitle();
   }, [slug]);
+
+  const handleEdit = (titleEdit: TitleEdit) => {
+    setSelectedTitle(titleEdit);
+  };
+
+  const handleSave = async () => {
+    if (!selectedTitle) return;
+    try {
+      await api.patch(`/titles/${selectedTitle.id}`, {
+        name: selectedTitle.name,
+        description: selectedTitle.description,
+        trailer: selectedTitle.trailer,
+        image: selectedTitle.image,
+        slug: selectedTitle.slug,
+      });
+      alert("Title updated successfully");
+      setSelectedTitle(null);
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update title");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (confirm("Are you sure you want to delete this title?")) {
+      try {
+        await api.delete(`/titles/${id}`);
+        alert("Title deleted successfully.");
+        window.location.reload();
+      } catch (error) {
+        console.error(error);
+        alert("Failed to delete title.");
+      }
+    }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -70,6 +128,24 @@ const TittleSection = ({ slug }: { slug: string }) => {
         <p className="text-xl sm:text-2xl lg:text-3xl text-center">
           {title.name}
         </p>
+        {user && user.role === "admin" && (
+          <div className="flex space-x-2">
+            <Button
+              variant="outline"
+              onClick={() => handleEdit(title)}
+              className="flex items-center gap-1 px-2 text-black dark:text-white"
+            >
+              <Pencil /> Edit
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => handleDelete(title.id)}
+              className="flex items-center gap-1 px-2"
+            >
+              <Trash2 /> Delete
+            </Button>
+          </div>
+        )}
         <div className="flex items-end space-x-1 text-base sm:text-lg lg:text-xl">
           <p>{title.likes}</p>
           <ThumbsUp />
@@ -77,7 +153,6 @@ const TittleSection = ({ slug }: { slug: string }) => {
           <ThumbsDown />
           <p>{title.dislikes}</p>
           <div className="pl-3">
-            {" "}
             {((title.likes * 10) / (title.likes + title.dislikes)).toFixed(2)}
             /10
           </div>
@@ -89,9 +164,10 @@ const TittleSection = ({ slug }: { slug: string }) => {
         </Link>
       </div>
       <div className="flex flex-col space-y-2">
-        <div className="border border-white px-4 py-2 rounded-lg">
-          <p className="text-m lg:text-lg">{title.description}</p>
-        </div>
+        <p className="text-m lg:text-lg border border-white px-4 py-2 rounded-lg">
+          {title.description}
+        </p>
+
         <div className="flex justify-center border border-white px-2 py-4 rounded-lg">
           <iframe
             className="hidden lg:block"
@@ -125,6 +201,96 @@ const TittleSection = ({ slug }: { slug: string }) => {
           ></iframe>
         </div>
       </div>
+
+      {selectedTitle && (
+        <Dialog open={true} onOpenChange={() => setSelectedTitle(null)}>
+          <DialogContent>
+            <DialogHeader>Edit Title</DialogHeader>
+            <div className="space-y-2">
+              <div className="flex flex-col">
+                <p>Name</p>
+                <Input
+                  id="name"
+                  value={selectedTitle.name}
+                  onChange={(e) =>
+                    setSelectedTitle({
+                      ...selectedTitle,
+                      name: e.target.value,
+                    })
+                  }
+                  placeholder="Enter name"
+                />
+              </div>
+              <div className="flex flex-col">
+                <p>Description</p>
+                <Textarea
+                  className="min-h-[200px]"
+                  id="description"
+                  name="description"
+                  placeholder="Enter description"
+                  value={selectedTitle.description}
+                  onChange={(e) =>
+                    setSelectedTitle({
+                      ...selectedTitle,
+                      description: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div className="flex flex-col">
+                <p>Trailer</p>
+                <Input
+                  id="trailer"
+                  value={selectedTitle.trailer}
+                  onChange={(e) =>
+                    setSelectedTitle({
+                      ...selectedTitle,
+                      trailer: e.target.value,
+                    })
+                  }
+                  placeholder="Enter trailer"
+                />
+              </div>
+              <div className="flex flex-col">
+                <p>Image</p>
+                <Input
+                  id="image"
+                  onChange={(e) =>
+                    setSelectedTitle({
+                      ...selectedTitle,
+                      image: e.target.value,
+                    })
+                  }
+                  placeholder="image.jpg"
+                />
+              </div>
+              <div className="flex flex-col">
+                <p>Slug</p>
+                <Input
+                  id="slug"
+                  value={selectedTitle.slug}
+                  onChange={(e) =>
+                    setSelectedTitle({ ...selectedTitle, slug: e.target.value })
+                  }
+                  placeholder="Enter slug"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                className="px-2"
+                variant="outline"
+                onClick={() => setSelectedTitle(null)}
+              >
+                Cancel
+              </Button>
+              <Button className="px-2" onClick={handleSave}>
+                Save
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
