@@ -24,6 +24,7 @@ export interface Review {
   likes: number;
   dislikes: number;
   title_id: number;
+  user_id: number;
 }
 
 interface AnouncementPagePropsType {

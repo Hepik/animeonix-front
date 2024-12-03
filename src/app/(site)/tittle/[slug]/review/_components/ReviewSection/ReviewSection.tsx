@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,10 +15,40 @@ interface ReviewSectionProps {
   review: Review | null;
 }
 
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  avatar: string;
+}
+
+export interface Users {
+  users: User[];
+}
+
 const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
+  const [userInfo, setUserInfo] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { user } = useUser();
 
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!review?.user_id) return;
+      try {
+        setIsLoading(true);
+        const response = await api.get<Users>(`/users/?id=${review.user_id}`);
+        setUserInfo(response.data.users[0]);
+      } catch (err: any) {
+        console.error(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [review?.user_id]);
 
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this review?")) {
@@ -35,14 +65,25 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
 
   if (!review) return <div>Loading</div>;
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!userInfo) {
+    return <div>User not found</div>;
+  }
+
   return (
     <div className="flex flex-col gap-2 text-white">
       <div className="flex justify-between">
         <div className="flex items-center space-x-2 w-full">
           <div className="relative h-[70px] w-[70px] rounded-full overflow-hidden bg-gray-200 mb-2">
-            <Link href="/#" className="relative block w-full h-full">
+            <Link
+              href={`/profile/${userInfo.username}`}
+              className="relative block w-full h-full"
+            >
               <Image
-                src="/user.jpg"
+                src={userInfo.avatar}
                 alt="User Image"
                 fill={true}
                 sizes="20vw"
@@ -53,10 +94,10 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
             </Link>
           </div>
           <Link
-            href="#"
+            href={`/profile/${userInfo.username}`}
             className="truncate max-w-full text-center text-xl hover:text-blue-500"
           >
-            Hepik
+            {userInfo.username}
           </Link>
         </div>
 
