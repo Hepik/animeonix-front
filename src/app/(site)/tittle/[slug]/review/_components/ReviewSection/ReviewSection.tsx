@@ -101,7 +101,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
           </Link>
         </div>
 
-        {user && user.role === "admin" && (
+        {user && (user.role === "admin" || user.id === review.user_id) && (
           <div className="flex items-center">
             <Button
               variant="destructive"
