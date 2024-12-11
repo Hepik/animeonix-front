@@ -38,7 +38,7 @@ const FormInput = ({ onSubmit }: { onSubmit: (content: string) => void }) => {
   }, []);
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col min-h-[600px] overflow-hidden p-4 rounded-lg border border-gray-300 bg-white">
+      <div className="flex flex-col min-h-[600px] overflow-hidden p-4 rounded-lg border border-gray-300 bg-white dark:text-black">
         <div ref={quillRef} className="quill-editor" />
       </div>
       <div className="flex pt-2 justify-end">
