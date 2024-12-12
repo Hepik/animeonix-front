@@ -20,6 +20,9 @@ const CreateTitlePage = () => {
     slug: "",
   });
 
+  const [file, setFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -27,15 +30,39 @@ const CreateTitlePage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
-      await api.post("/titles", formData);
-      alert("Title created successfully!");
-      router.replace(`/tittle/${formData.slug}`);
+      if (file) {
+        setIsUploading(true);
+        const formDataFile = new FormData();
+        formDataFile.append("file", file);
+
+        const { data } = await api.post("/titles/change/image", formDataFile, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        const updatedFormData = { ...formData, image: data };
+        setFormData(updatedFormData);
+      }
+
+      if (formData.image != "") {
+        await api.post("/titles", formData);
+        alert("Title created successfully!");
+        router.replace(`/tittle/${formData.slug}`);
+      }
     } catch (error) {
       console.error(error);
       alert("Failed to create title.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -77,15 +104,8 @@ const CreateTitlePage = () => {
           />
         </div>
         <div>
-          <Label htmlFor="image">Image File Name</Label>
-          <Input
-            id="image"
-            name="image"
-            placeholder="Enter image file name"
-            value={formData.image}
-            onChange={handleInputChange}
-            required
-          />
+          <Label htmlFor="image">Upload Image</Label>
+          <Input id="image" type="file" onChange={handleFileChange} required />
         </div>
         <div>
           <Label htmlFor="slug">Slug</Label>
@@ -98,8 +118,8 @@ const CreateTitlePage = () => {
             required
           />
         </div>
-        <Button type="submit" className="w-full">
-          Create Title
+        <Button type="submit" className="w-full" disabled={isUploading}>
+          {isUploading ? "Uploading..." : "Create Title"}
         </Button>
       </form>
     </Container>
