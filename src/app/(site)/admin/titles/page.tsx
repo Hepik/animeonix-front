@@ -44,6 +44,7 @@ const CreateTitlePage = () => {
         setIsUploading(true);
         const formDataFile = new FormData();
         formDataFile.append("file", file);
+        formDataFile.append("old_image", "");
 
         const { data } = await api.post("/titles/change/image", formDataFile, {
           headers: { "Content-Type": "multipart/form-data" },
