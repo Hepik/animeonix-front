@@ -43,6 +43,7 @@ const TittleSection = ({ slug }: { slug: string }) => {
   const [title, setTitle] = useState<Title | null>(null);
   const [selectedTitle, setSelectedTitle] = useState<TitleEdit | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const { user } = useUser();
 
@@ -70,15 +71,30 @@ const TittleSection = ({ slug }: { slug: string }) => {
   };
 
   const handleSave = async () => {
-    if (!selectedTitle) return;
     try {
-      await api.patch(`/titles/${selectedTitle.id}`, {
-        name: selectedTitle.name,
-        description: selectedTitle.description,
-        trailer: selectedTitle.trailer,
-        image: selectedTitle.image,
-        slug: selectedTitle.slug,
-      });
+      if (!selectedTitle) return;
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("file", imageFile);
+        formData.append("old_image", title?.image || "");
+
+        const { data } = await api.post("/titles/change/image", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        let imageUrl = data;
+
+        if (imageUrl) {
+          await api.patch(`/titles/${selectedTitle.id}`, {
+            name: selectedTitle.name,
+            description: selectedTitle.description,
+            trailer: selectedTitle.trailer,
+            image: imageUrl,
+            slug: selectedTitle.slug,
+          });
+        }
+      }
+
       alert("Title updated successfully");
       setSelectedTitle(null);
       window.location.reload();
@@ -258,13 +274,10 @@ const TittleSection = ({ slug }: { slug: string }) => {
                 <p>Image</p>
                 <Input
                   id="image"
+                  type="file"
                   onChange={(e) =>
-                    setSelectedTitle({
-                      ...selectedTitle,
-                      image: e.target.value,
-                    })
+                    setImageFile(e.target.files ? e.target.files[0] : null)
                   }
-                  placeholder="image.jpg"
                 />
               </div>
               <div className="flex flex-col">
