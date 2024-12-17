@@ -11,8 +11,6 @@ export interface Title {
   name: string;
   description: string;
   trailer: string;
-  likes: number;
-  dislikes: number;
   reviews: number;
   image: string;
   slug: string;
@@ -21,8 +19,6 @@ export interface Title {
 export interface Review {
   id: number;
   content: string;
-  likes: number;
-  dislikes: number;
   title_id: number;
   user_id: number;
 }

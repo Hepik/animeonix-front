@@ -14,6 +14,9 @@ interface ReviewProps {
   dislikes: number;
   slug: string;
   user_id: number;
+  onLike: () => void;
+  onDislike: () => void;
+  currentUserReaction?: "like" | "dislike" | null;
 }
 
 interface User {
@@ -34,6 +37,8 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
   dislikes,
   slug,
   user_id,
+  onLike,
+  onDislike,
 }) => {
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -96,12 +101,19 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
       <div className="flex flex-col items-center space-y-1 w-[200px] pt-4 pb-2">
         <div className="flex space-x-1 text-m">
           <p>{likes}</p>
-          <ThumbsUp />
+          <ThumbsUp onClick={onLike} />
           <p>/</p>
-          <ThumbsDown />
+          <ThumbsDown onClick={onDislike} />
           <p>{dislikes}</p>
         </div>
-        <div>■■■□□ {((likes * 10) / (likes + dislikes)).toFixed(2)}/10</div>
+        <div>
+          {likes + dislikes > 0
+            ? Number.isInteger((likes * 10) / (likes + dislikes))
+              ? ((likes * 10) / (likes + dislikes)).toFixed(0)
+              : ((likes * 10) / (likes + dislikes)).toFixed(2)
+            : "0"}
+          /10
+        </div>
         <Link href={`/tittle/${slug}/review/${id}`}>
           <Button className="border border-white max-[580px]:text-base max-[580px]:py-6 rounded-lg py-8 px-4 text-xl hover:text-black hover:bg-white">
             Read more

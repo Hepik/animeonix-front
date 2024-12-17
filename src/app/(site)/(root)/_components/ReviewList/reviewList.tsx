@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import ReviewListItem from "../ReviewListItem/reviewListItem";
 import { api } from "@/utils/api/api";
@@ -9,9 +9,6 @@ interface Title {
   id: number;
   name: string;
   description: string;
-  trailer: string;
-  likes: number;
-  dislikes: number;
   reviews: number;
   image: string;
   slug: string;
@@ -22,6 +19,12 @@ interface TitlesResponse {
   total: number;
 }
 
+interface Reaction {
+  title_id: number;
+  likes: number;
+  dislikes: number;
+}
+
 const fetchTitles = async (page: number, limit: number) => {
   const response = await api.get<TitlesResponse>(
     `/titles?page=${page}&limit=${limit}`
@@ -29,88 +32,100 @@ const fetchTitles = async (page: number, limit: number) => {
   return response.data;
 };
 
+const fetchReactions = async (titleIds: number[]) => {
+  const response = await api.get<{ reactions: Reaction[] }>("/reaction/count", {
+    params: {
+      title_ids: titleIds,
+    },
+    paramsSerializer: (params) =>
+      params.title_ids.map((id: number) => `title_ids=${id}`).join("&"),
+  });
+  return response.data.reactions;
+};
+
 export const ReviewList = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
+  const queryClient = useQueryClient();
 
-  const { data } = useQuery<TitlesResponse>({
+  const { data: titlesData } = useQuery<TitlesResponse>({
     queryKey: ["titles", page],
     queryFn: () => fetchTitles(page, limit),
-    placeholderData: undefined,
     staleTime: 5000,
   });
 
-  const totalPages = data ? Math.ceil(data.total / limit) : 0;
+  const titleIds = titlesData?.titles.map((t) => t.id) || [];
 
-  const generatePageNumbers = () => {
-    const pages = [];
+  const { data: reactionsData } = useQuery<Reaction[]>({
+    queryKey: ["reactions", titleIds],
+    queryFn: () => fetchReactions(titleIds),
+    enabled: titleIds.length > 0,
+  });
 
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (page <= 4) {
-        pages.push(1, 2, 3, 4, 5, "...", totalPages);
-      } else if (page > 4 && page < totalPages - 3) {
-        pages.push(1, "...", page - 1, page, page + 1, "...", totalPages);
-      } else {
-        pages.push(
-          1,
-          "...",
-          totalPages - 4,
-          totalPages - 3,
-          totalPages - 2,
-          totalPages - 1,
-          totalPages
-        );
-      }
-    }
+  const reactionMutation = useMutation({
+    mutationFn: (variables: { titleId: number; type: "like" | "dislike" }) =>
+      api.post("/reaction", {
+        title_id: variables.titleId,
+        type: variables.type,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reactions", titleIds] });
+    },
+  });
 
-    return pages;
+  const handleReaction = (titleId: number, type: "like" | "dislike") => {
+    reactionMutation.mutate({ titleId, type });
   };
+
+  const totalPages = titlesData ? Math.ceil(titlesData.total / limit) : 0;
 
   return (
     <div className="max-w-[1200px]">
-      {data?.titles.map((titles) => (
-        <div key={titles.id} className="flex items-center space-x-2">
-          <ReviewListItem {...titles} />
-        </div>
-      ))}
-      <div className="flex justify-center space-x-2">
+      {titlesData?.titles.map((title) => {
+        const reaction = reactionsData?.find(
+          (r) => r.title_id === title.id
+        ) || {
+          likes: 0,
+          dislikes: 0,
+        };
+
+        return (
+          <div key={title.id} className="flex items-center space-x-2">
+            <ReviewListItem
+              {...title}
+              likes={reaction.likes}
+              dislikes={reaction.dislikes}
+              onLike={() => handleReaction(title.id, "like")}
+              onDislike={() => handleReaction(title.id, "dislike")}
+            />
+          </div>
+        );
+      })}
+      <div className="flex justify-center space-x-2 mt-4">
         <button
           onClick={() => setPage((old) => Math.max(old - 1, 1))}
           disabled={page === 1}
-          className="w-10 h-10 flex items-center justify-center bg-gray-500 text-black rounded-full hover:bg-white disabled:opacity-50 disabled:hover:bg-gray-500"
+          className="w-10 h-10 flex items-center justify-center bg-gray-500 text-white rounded-full hover:bg-white disabled:opacity-50 disabled:hover:bg-gray-500"
         >
           ←
         </button>
-
-        {generatePageNumbers().map((pageNum, index) =>
-          typeof pageNum === "number" ? (
-            <button
-              key={index}
-              onClick={() => setPage(pageNum)}
-              disabled={pageNum === page}
-              className={`w-10 h-10 rounded-full ${
-                pageNum === page
-                  ? "bg-white text-black"
-                  : "bg-gray-500 text-black hover:bg-white"
-              }`}
-            >
-              {pageNum}
-            </button>
-          ) : (
-            <span key={index} className="px-2 py-2 text-gray-500">
-              {pageNum}
-            </span>
-          )
-        )}
-
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+          <button
+            key={p}
+            onClick={() => setPage(p)}
+            className={`w-10 h-10 rounded-full ${
+              p === page
+                ? "bg-white text-black"
+                : "bg-gray-500 text-white hover:bg-white hover:text-black"
+            }`}
+          >
+            {p}
+          </button>
+        ))}
         <button
-          onClick={() => setPage((old) => (old < totalPages ? old + 1 : old))}
+          onClick={() => setPage((old) => Math.min(old + 1, totalPages))}
           disabled={page === totalPages}
-          className="w-10 h-10 flex items-center justify-center bg-gray-500 text-black rounded-full hover:bg-white disabled:opacity-50 disabled:hover:bg-gray-500"
+          className="w-10 h-10 flex items-center justify-center bg-gray-500 text-white rounded-full hover:bg-white disabled:opacity-50 disabled:hover:bg-gray-500"
         >
           →
         </button>

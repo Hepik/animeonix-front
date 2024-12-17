@@ -1,16 +1,63 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { Title } from "../../[review_id]/page";
+import { api } from "@/utils/api/api";
 
 interface TitleSectionProps {
   title: Title | null;
 }
 
+interface Reaction {
+  title_id: number;
+  likes: number;
+  dislikes: number;
+}
+
+const fetchReactions = async (titleIds: number[]): Promise<Reaction[]> => {
+  const response = await api.get<{ reactions: Reaction[] }>("/reaction/count", {
+    params: { title_ids: titleIds },
+    paramsSerializer: (params) =>
+      params.title_ids.map((id: number) => `title_ids=${id}`).join("&"),
+  });
+  return response.data.reactions;
+};
+
 const TittleSection: React.FC<TitleSectionProps> = ({ title }) => {
+  const queryClient = useQueryClient();
+
+  const { data: reactionsData } = useQuery<Reaction[]>({
+    queryKey: ["reactions_title", title?.id],
+    queryFn: () => fetchReactions(title?.id ? [title.id] : []),
+    enabled: !!title?.id,
+  });
+
+  const reactionMutation = useMutation({
+    mutationFn: async (variables: {
+      titleId: number;
+      type: "like" | "dislike";
+    }) =>
+      api.post("/reaction", {
+        title_id: variables.titleId,
+        type: variables.type,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["reactions_title", title?.id],
+      });
+    },
+  });
+
+  const handleReaction = (type: "like" | "dislike") => {
+    if (title) {
+      reactionMutation.mutate({ titleId: title.id, type });
+    }
+  };
+
   if (!title) return <div>Loading</div>;
   return (
     <div className="flex text-white gap-4 justify-center">
@@ -36,14 +83,27 @@ const TittleSection: React.FC<TitleSectionProps> = ({ title }) => {
           {title.name}
         </Link>
         <div className="flex items-end space-x-1 text-base sm:text-xl">
-          <p>{title.likes}</p>
-          <ThumbsUp />
+          <p>{reactionsData?.[0]?.likes || 0}</p>
+          <ThumbsUp onClick={() => handleReaction("like")} />
           <p>/</p>
-          <ThumbsDown />
-          <p>{title.dislikes}</p>
+          <ThumbsDown onClick={() => handleReaction("dislike")} />
+          <p>{reactionsData?.[0]?.dislikes || 0}</p>
           <div className="pl-2">
-            ■■■□□{" "}
-            {((title.likes * 10) / (title.likes + title.dislikes)).toFixed(2)}
+            {reactionsData &&
+            reactionsData[0]?.likes + reactionsData[0]?.dislikes > 0
+              ? Number.isInteger(
+                  (reactionsData[0]?.likes * 10) /
+                    (reactionsData[0]?.likes + reactionsData[0]?.dislikes)
+                )
+                ? (
+                    (reactionsData[0]?.likes * 10) /
+                    (reactionsData[0]?.likes + reactionsData[0]?.dislikes)
+                  ).toFixed(0)
+                : (
+                    (reactionsData[0]?.likes * 10) /
+                    (reactionsData[0]?.likes + reactionsData[0]?.dislikes)
+                  ).toFixed(2)
+              : "0"}
             /10
           </div>
         </div>
