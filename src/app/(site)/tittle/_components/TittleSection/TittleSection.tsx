@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { api } from "@/utils/api/api";
@@ -42,6 +42,7 @@ interface Reaction {
   title_id: number;
   likes: number;
   dislikes: number;
+  current_user_reaction: "like" | "dislike" | null;
 }
 
 const fetchReactions = async (titleIds: number[]): Promise<Reaction[]> => {
@@ -210,9 +211,23 @@ const TittleSection = ({ slug }: { slug: string }) => {
         )}
         <div className="flex items-end space-x-1 text-base sm:text-lg lg:text-xl">
           <p>{reactionsData?.[0]?.likes || 0}</p>
-          <ThumbsUp onClick={() => handleReaction("like")} />
+          <ThumbsUp
+            onClick={() => handleReaction("like")}
+            className={`cursor-pointer ${
+              reactionsData?.[0]?.current_user_reaction === "like"
+                ? "text-green-500"
+                : ""
+            }`}
+          />
           <p>/</p>
-          <ThumbsDown onClick={() => handleReaction("dislike")} />
+          <ThumbsDown
+            onClick={() => handleReaction("dislike")}
+            className={`cursor-pointer ${
+              reactionsData?.[0]?.current_user_reaction === "dislike"
+                ? "text-red-500"
+                : ""
+            }`}
+          />
           <p>{reactionsData?.[0]?.dislikes || 0}</p>
           <div className="pl-3">
             {reactionsData &&
@@ -232,6 +247,7 @@ const TittleSection = ({ slug }: { slug: string }) => {
               : "0"}
             /10
           </div>
+          <Star className="text-amber-300" />
         </div>
         <Link href={`/tittle/${slug}/form`}>
           <Button className="border border-white rounded-lg py-4 lg:py-8 px-4 text-base lg:text-xl hover:text-black hover:bg-white">

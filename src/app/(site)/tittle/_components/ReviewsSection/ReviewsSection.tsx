@@ -26,6 +26,7 @@ interface Reaction {
   review_id: number;
   likes: number;
   dislikes: number;
+  current_user_reaction: "like" | "dislike" | null;
 }
 
 const fetchReviews = async (
@@ -136,6 +137,7 @@ const ReviewsSection: React.FC<ReviewSectionProps> = ({ data: titleData }) => {
                 slug={titleData?.slug || ""}
                 likes={reaction.likes}
                 dislikes={reaction.dislikes}
+                currentUserReaction={reaction.current_user_reaction}
                 onLike={() => handleReaction(review.id, "like")}
                 onDislike={() => handleReaction(review.id, "dislike")}
               />

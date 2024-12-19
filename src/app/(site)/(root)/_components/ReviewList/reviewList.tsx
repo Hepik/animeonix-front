@@ -23,6 +23,7 @@ interface Reaction {
   title_id: number;
   likes: number;
   dislikes: number;
+  current_user_reaction: "like" | "dislike" | null;
 }
 
 const fetchTitles = async (page: number, limit: number) => {
@@ -34,9 +35,7 @@ const fetchTitles = async (page: number, limit: number) => {
 
 const fetchReactions = async (titleIds: number[]) => {
   const response = await api.get<{ reactions: Reaction[] }>("/reaction/count", {
-    params: {
-      title_ids: titleIds,
-    },
+    params: { title_ids: titleIds },
     paramsSerializer: (params) =>
       params.title_ids.map((id: number) => `title_ids=${id}`).join("&"),
   });
@@ -87,18 +86,24 @@ export const ReviewList = () => {
         ) || {
           likes: 0,
           dislikes: 0,
+          current_user_reaction: null,
         };
 
         return (
-          <div key={title.id} className="flex items-center space-x-2">
-            <ReviewListItem
-              {...title}
-              likes={reaction.likes}
-              dislikes={reaction.dislikes}
-              onLike={() => handleReaction(title.id, "like")}
-              onDislike={() => handleReaction(title.id, "dislike")}
-            />
-          </div>
+          <ReviewListItem
+            key={title.id}
+            id={title.id}
+            name={title.name}
+            description={title.description}
+            likes={reaction.likes}
+            dislikes={reaction.dislikes}
+            currentUserReaction={reaction.current_user_reaction}
+            reviews={title.reviews}
+            image={title.image}
+            slug={title.slug}
+            onLike={() => handleReaction(title.id, "like")}
+            onDislike={() => handleReaction(title.id, "dislike")}
+          />
         );
       })}
       <div className="flex justify-center space-x-2 mt-4">

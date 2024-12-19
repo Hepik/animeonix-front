@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Star } from "lucide-react";
 import { Review } from "../../[review_id]/page";
 import { useUser } from "@/lib/context/UserContext";
 import { api } from "@/utils/api/api";
@@ -31,6 +31,7 @@ interface Reaction {
   review_id: number;
   likes: number;
   dislikes: number;
+  current_user_reaction: "like" | "dislike" | null;
 }
 
 const fetchReactions = async (reviewIds: number[]) => {
@@ -169,11 +170,26 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
       </div>
       <div className="flex justify-end space-x-1 text-base sm:text-xl">
         <p>{reactionsData?.[0]?.likes || 0}</p>
-        <ThumbsUp onClick={() => handleReaction("like")} />
+        <ThumbsUp
+          onClick={() => handleReaction("like")}
+          className={`cursor-pointer ${
+            reactionsData?.[0]?.current_user_reaction === "like"
+              ? "text-green-500"
+              : ""
+          }`}
+        />
+
         <p>/</p>
-        <ThumbsDown onClick={() => handleReaction("dislike")} />
+        <ThumbsDown
+          onClick={() => handleReaction("dislike")}
+          className={`cursor-pointer ${
+            reactionsData?.[0]?.current_user_reaction === "dislike"
+              ? "text-red-500"
+              : ""
+          }`}
+        />
         <p>{reactionsData?.[0]?.dislikes || 0}</p>
-        <div className="pl-2">
+        <div className="flex pl-2">
           {reactionsData &&
           reactionsData[0]?.likes + reactionsData[0]?.dislikes > 0
             ? Number.isInteger(
@@ -190,6 +206,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
                 ).toFixed(2)
             : "0"}
           /10
+          <Star className="text-amber-300" />
         </div>
       </div>
     </div>
