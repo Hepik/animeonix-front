@@ -13,6 +13,9 @@ interface TitleProps {
   reviews: number;
   image: string;
   slug: string;
+  currentUserReaction: "like" | "dislike" | null;
+  onLike: () => void;
+  onDislike: () => void;
 }
 
 const ReviewListItem: React.FC<TitleProps> = ({
@@ -24,6 +27,9 @@ const ReviewListItem: React.FC<TitleProps> = ({
   reviews,
   image,
   slug,
+  currentUserReaction,
+  onLike,
+  onDislike,
 }) => {
   return (
     <div className="bg-gray-700 rounded-lg text-white border shadow-sm px-2 pb-2 w-full mb-4">
@@ -41,7 +47,7 @@ const ReviewListItem: React.FC<TitleProps> = ({
             >
               <Image
                 src={image}
-                alt="Bleach Image"
+                alt={`${name} Image`}
                 fill={true}
                 sizes="15vw"
                 style={{
@@ -58,9 +64,19 @@ const ReviewListItem: React.FC<TitleProps> = ({
               </Link>
               <div className="flex md:hidden items-end text-xs space-x-1">
                 <div className="text-sm">{likes}</div>
-                <ThumbsUp />
+                <ThumbsUp
+                  onClick={onLike}
+                  className={`cursor-pointer ${
+                    currentUserReaction === "like" ? "text-green-500" : ""
+                  }`}
+                />
                 <p>/</p>
-                <ThumbsDown />
+                <ThumbsDown
+                  onClick={onDislike}
+                  className={`cursor-pointer ${
+                    currentUserReaction === "dislike" ? "text-red-500" : ""
+                  }`}
+                />
                 <div className="text-sm">{dislikes}</div>
                 <div className="text-sm pl-1 max-sm:hidden">
                   reviews: {reviews}
@@ -72,13 +88,29 @@ const ReviewListItem: React.FC<TitleProps> = ({
         <div className="hidden md:flex flex-col items-end space-y-1">
           <div className="flex items-center space-x-1">
             <div className="text-sm">{likes}</div>
-            <ThumbsUp />
+            <ThumbsUp
+              onClick={onLike}
+              className={`cursor-pointer ${
+                currentUserReaction === "like" ? "text-green-500" : ""
+              }`}
+            />
             <p>/</p>
-            <ThumbsDown />
+            <ThumbsDown
+              onClick={onDislike}
+              className={`cursor-pointer ${
+                currentUserReaction === "dislike" ? "text-red-500" : ""
+              }`}
+            />
             <div className="text-sm">{dislikes}</div>
           </div>
           <div className="flex">
-            3.5 <Star />
+            {likes + dislikes > 0
+              ? Number.isInteger((likes * 10) / (likes + dislikes))
+                ? ((likes * 10) / (likes + dislikes)).toFixed(0)
+                : ((likes * 10) / (likes + dislikes)).toFixed(2)
+              : "0"}
+            /10
+            <Star className="text-amber-300" />
           </div>
           <div className="text-sm">reviews: {reviews}</div>
         </div>

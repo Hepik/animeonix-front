@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import ReviewsSectionItem from "../ReviewsSectionItem/ReviewsSectionItem";
 import { api } from "@/utils/api/api";
@@ -13,8 +13,6 @@ interface ReviewSectionProps {
 interface Review {
   id: number;
   content: string;
-  likes: number;
-  dislikes: number;
   title_id: number;
   user_id: number;
 }
@@ -22,6 +20,13 @@ interface Review {
 interface ReviewsResponse {
   reviews: Review[];
   total: number;
+}
+
+interface Reaction {
+  review_id: number;
+  likes: number;
+  dislikes: number;
+  current_user_reaction: "like" | "dislike" | null;
 }
 
 const fetchReviews = async (
@@ -35,9 +40,21 @@ const fetchReviews = async (
   return response.data;
 };
 
+const fetchReactions = async (reviewIds: number[]) => {
+  const response = await api.get<{ reactions: Reaction[] }>("/reaction/count", {
+    params: {
+      review_ids: reviewIds,
+    },
+    paramsSerializer: (params) =>
+      params.review_ids.map((id: number) => `review_ids=${id}`).join("&"),
+  });
+  return response.data.reactions;
+};
+
 const ReviewsSection: React.FC<ReviewSectionProps> = ({ data: titleData }) => {
   const [page, setPage] = useState(1);
   const limit = 10;
+  const queryClient = useQueryClient();
 
   const { data } = useQuery<ReviewsResponse>({
     queryKey: ["reviews", page, titleData?.id],
@@ -45,6 +62,29 @@ const ReviewsSection: React.FC<ReviewSectionProps> = ({ data: titleData }) => {
     placeholderData: undefined,
     staleTime: 5000,
   });
+
+  const reviewIds = data?.reviews.map((r) => r.id) || [];
+
+  const { data: reactionsData } = useQuery<Reaction[]>({
+    queryKey: ["reactions", reviewIds],
+    queryFn: () => fetchReactions(reviewIds),
+    enabled: reviewIds.length > 0,
+  });
+
+  const reactionMutation = useMutation({
+    mutationFn: (variables: { reviewId: number; type: "like" | "dislike" }) =>
+      api.post("/reaction", {
+        review_id: variables.reviewId,
+        type: variables.type,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reactions", reviewIds] });
+    },
+  });
+
+  const handleReaction = (reviewId: number, type: "like" | "dislike") => {
+    reactionMutation.mutate({ reviewId, type });
+  };
 
   const totalPages = data ? Math.ceil(data.total / limit) : 0;
 
@@ -81,11 +121,29 @@ const ReviewsSection: React.FC<ReviewSectionProps> = ({ data: titleData }) => {
         Reviews: {data?.total || 0}
       </p>
       <div className="space-y-4">
-        {data?.reviews.map((review) => (
-          <div key={review.id} className="flex items-center space-x-2">
-            <ReviewsSectionItem {...review} slug={titleData?.slug || ""} />
-          </div>
-        ))}
+        {data?.reviews.map((review) => {
+          const reaction = reactionsData?.find(
+            (r) => r.review_id === review.id
+          ) || {
+            likes: 0,
+            dislikes: 0,
+            current_user_reaction: null,
+          };
+
+          return (
+            <div key={review.id} className="flex items-center space-x-2">
+              <ReviewsSectionItem
+                {...review}
+                slug={titleData?.slug || ""}
+                likes={reaction.likes}
+                dislikes={reaction.dislikes}
+                currentUserReaction={reaction.current_user_reaction}
+                onLike={() => handleReaction(review.id, "like")}
+                onDislike={() => handleReaction(review.id, "dislike")}
+              />
+            </div>
+          );
+        })}
         <div className="flex justify-center space-x-2">
           <button
             onClick={() => setPage((old) => Math.max(old - 1, 1))}

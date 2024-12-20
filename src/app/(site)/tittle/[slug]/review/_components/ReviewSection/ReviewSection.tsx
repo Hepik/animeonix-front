@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Star } from "lucide-react";
 import { Review } from "../../[review_id]/page";
 import { useUser } from "@/lib/context/UserContext";
 import { api } from "@/utils/api/api";
@@ -26,10 +27,29 @@ export interface Users {
   users: User[];
 }
 
+interface Reaction {
+  review_id: number;
+  likes: number;
+  dislikes: number;
+  current_user_reaction: "like" | "dislike" | null;
+}
+
+const fetchReactions = async (reviewIds: number[]) => {
+  const response = await api.get<{ reactions: Reaction[] }>("/reaction/count", {
+    params: {
+      review_ids: reviewIds,
+    },
+    paramsSerializer: (params) =>
+      params.review_ids.map((id: number) => `review_ids=${id}`).join("&"),
+  });
+  return response.data.reactions;
+};
+
 const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { user } = useUser();
+  const queryClient = useQueryClient();
 
   const router = useRouter();
 
@@ -60,6 +80,34 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
         console.error(error);
         alert("Failed to delete review.");
       }
+    }
+  };
+
+  const { data: reactionsData } = useQuery<Reaction[]>({
+    queryKey: ["reactions_review", review?.id],
+    queryFn: () => fetchReactions(review?.id ? [review.id] : []),
+    enabled: !!review?.id,
+  });
+
+  const reactionMutation = useMutation({
+    mutationFn: async (variables: {
+      reviewId: number;
+      type: "like" | "dislike";
+    }) =>
+      api.post("/reaction", {
+        review_id: variables.reviewId,
+        type: variables.type,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["reactions_review", review?.id],
+      });
+    },
+  });
+
+  const handleReaction = (type: "like" | "dislike") => {
+    if (review) {
+      reactionMutation.mutate({ reviewId: review.id, type });
     }
   };
 
@@ -121,15 +169,44 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
         ></div>
       </div>
       <div className="flex justify-end space-x-1 text-base sm:text-xl">
-        <p>{review.likes}</p>
-        <ThumbsUp />
+        <p>{reactionsData?.[0]?.likes || 0}</p>
+        <ThumbsUp
+          onClick={() => handleReaction("like")}
+          className={`cursor-pointer ${
+            reactionsData?.[0]?.current_user_reaction === "like"
+              ? "text-green-500"
+              : ""
+          }`}
+        />
+
         <p>/</p>
-        <ThumbsDown />
-        <p>{review.dislikes}</p>
-        <div className="pl-2">
-          ■■■□□{" "}
-          {((review.likes * 10) / (review.likes + review.dislikes)).toFixed(2)}
+        <ThumbsDown
+          onClick={() => handleReaction("dislike")}
+          className={`cursor-pointer ${
+            reactionsData?.[0]?.current_user_reaction === "dislike"
+              ? "text-red-500"
+              : ""
+          }`}
+        />
+        <p>{reactionsData?.[0]?.dislikes || 0}</p>
+        <div className="flex pl-2">
+          {reactionsData &&
+          reactionsData[0]?.likes + reactionsData[0]?.dislikes > 0
+            ? Number.isInteger(
+                (reactionsData[0]?.likes * 10) /
+                  (reactionsData[0]?.likes + reactionsData[0]?.dislikes)
+              )
+              ? (
+                  (reactionsData[0]?.likes * 10) /
+                  (reactionsData[0]?.likes + reactionsData[0]?.dislikes)
+                ).toFixed(0)
+              : (
+                  (reactionsData[0]?.likes * 10) /
+                  (reactionsData[0]?.likes + reactionsData[0]?.dislikes)
+                ).toFixed(2)
+            : "0"}
           /10
+          <Star className="text-amber-300" />
         </div>
       </div>
     </div>

@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { api } from "@/utils/api/api";
@@ -23,8 +24,6 @@ interface Title {
   name: string;
   description: string;
   trailer: string;
-  likes: number;
-  dislikes: number;
   reviews: number;
   image: string;
   slug: string;
@@ -39,11 +38,28 @@ interface TitleEdit {
   slug: string;
 }
 
+interface Reaction {
+  title_id: number;
+  likes: number;
+  dislikes: number;
+  current_user_reaction: "like" | "dislike" | null;
+}
+
+const fetchReactions = async (titleIds: number[]): Promise<Reaction[]> => {
+  const response = await api.get<{ reactions: Reaction[] }>("/reaction/count", {
+    params: { title_ids: titleIds },
+    paramsSerializer: (params) =>
+      params.title_ids.map((id: number) => `title_ids=${id}`).join("&"),
+  });
+  return response.data.reactions;
+};
+
 const TittleSection = ({ slug }: { slug: string }) => {
   const [title, setTitle] = useState<Title | null>(null);
   const [selectedTitle, setSelectedTitle] = useState<TitleEdit | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const queryClient = useQueryClient();
 
   const { user } = useUser();
 
@@ -117,6 +133,34 @@ const TittleSection = ({ slug }: { slug: string }) => {
     }
   };
 
+  const { data: reactionsData } = useQuery<Reaction[]>({
+    queryKey: ["reactions_title", title?.id],
+    queryFn: () => fetchReactions(title?.id ? [title.id] : []),
+    enabled: !!title?.id,
+  });
+
+  const reactionMutation = useMutation({
+    mutationFn: async (variables: {
+      titleId: number;
+      type: "like" | "dislike";
+    }) =>
+      api.post("/reaction", {
+        title_id: variables.titleId,
+        type: variables.type,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["reactions_title", title?.id],
+      });
+    },
+  });
+
+  const handleReaction = (type: "like" | "dislike") => {
+    if (title) {
+      reactionMutation.mutate({ titleId: title.id, type });
+    }
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -166,15 +210,44 @@ const TittleSection = ({ slug }: { slug: string }) => {
           </div>
         )}
         <div className="flex items-end space-x-1 text-base sm:text-lg lg:text-xl">
-          <p>{title.likes}</p>
-          <ThumbsUp />
+          <p>{reactionsData?.[0]?.likes || 0}</p>
+          <ThumbsUp
+            onClick={() => handleReaction("like")}
+            className={`cursor-pointer ${
+              reactionsData?.[0]?.current_user_reaction === "like"
+                ? "text-green-500"
+                : ""
+            }`}
+          />
           <p>/</p>
-          <ThumbsDown />
-          <p>{title.dislikes}</p>
+          <ThumbsDown
+            onClick={() => handleReaction("dislike")}
+            className={`cursor-pointer ${
+              reactionsData?.[0]?.current_user_reaction === "dislike"
+                ? "text-red-500"
+                : ""
+            }`}
+          />
+          <p>{reactionsData?.[0]?.dislikes || 0}</p>
           <div className="pl-3">
-            {((title.likes * 10) / (title.likes + title.dislikes)).toFixed(2)}
+            {reactionsData &&
+            reactionsData[0]?.likes + reactionsData[0]?.dislikes > 0
+              ? Number.isInteger(
+                  (reactionsData[0]?.likes * 10) /
+                    (reactionsData[0]?.likes + reactionsData[0]?.dislikes)
+                )
+                ? (
+                    (reactionsData[0]?.likes * 10) /
+                    (reactionsData[0]?.likes + reactionsData[0]?.dislikes)
+                  ).toFixed(0)
+                : (
+                    (reactionsData[0]?.likes * 10) /
+                    (reactionsData[0]?.likes + reactionsData[0]?.dislikes)
+                  ).toFixed(2)
+              : "0"}
             /10
           </div>
+          <Star className="text-amber-300" />
         </div>
         <Link href={`/tittle/${slug}/form`}>
           <Button className="border border-white rounded-lg py-4 lg:py-8 px-4 text-base lg:text-xl hover:text-black hover:bg-white">
