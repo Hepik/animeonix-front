@@ -41,6 +41,31 @@ class UserService {
       .then((resp) => resp.data);
     return response;
   }
+
+  async register(username: string, email: string, password: string) {
+    const response = await api.post("/users/register", {
+      username,
+      email,
+      password,
+    });
+
+    return response;
+  }
+
+  async verifyActivationToken(activationToken: string) {
+    const response = await api
+      .post("/users/account/activation", null, {
+        params: { activation_token: activationToken },
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((data) => data.data)
+      .catch((error) => {
+        console.error(error.response?.data);
+        throw new Error(error.response?.data?.detail || "Unknown error");
+      });
+
+    return response;
+  }
 }
 
 export const userService = new UserService();
