@@ -17,6 +17,14 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("access_token");
+      localStorage.setItem(
+        "toast_message",
+        JSON.stringify({
+          title: "Session ended",
+          description: "Please sign in again.",
+          variant: "destructive",
+        })
+      );
       window.location.href = "/login";
     }
     return Promise.reject(error);

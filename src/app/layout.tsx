@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/shared/ThemeProvider/ThemeProvider";
 import { cn } from "@/lib/utils";
 import { ClientProvider } from "@/components/shared/ClientProvider/ClientProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body className={cn(inter.className, "overflow-x-hidden")}>
         <ClientProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <Toaster />
             {children}
           </ThemeProvider>
         </ClientProvider>

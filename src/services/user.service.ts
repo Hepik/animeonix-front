@@ -1,25 +1,50 @@
 import { api } from "@/utils/api/api";
+import { toast } from "@/hooks/use-toast";
+import axios, { AxiosError } from "axios";
 
 class UserService {
   async login(username: string, password: string) {
-    const response = await api
-      .post<{
-        access_token: string;
-      }>(
-        "/auth/token",
-        {
-          username,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+    try {
+      const response = await api
+        .post<{
+          access_token: string;
+        }>(
+          "/auth/token",
+          {
+            username,
+            password,
           },
-        }
-      )
-      .then((data) => data.data);
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        )
+        .then((data) => data.data);
 
-    return response;
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        switch ((error.response?.data as any)?.detail) {
+          case "Wrong user or password.":
+            toast({
+              title: "Authorization error",
+              description: "Login or password is incorrect. Please try again.",
+              variant: "destructive",
+            });
+            break;
+
+          case "User is no activated. Please check your email.":
+            toast({
+              title: "Account is not activated",
+              description: "Check your email for activation.",
+              variant: "default",
+            });
+            break;
+        }
+      }
+      return Promise.reject(error);
+    }
   }
 
   async getCurrentUser() {

@@ -4,14 +4,25 @@ import { Container } from "@/components/shared/Container/Container";
 import { LoginForm } from "./_components";
 import { useRouter, useSearchParams } from "next/navigation";
 import { userService } from "@/services/user.service";
+import { useToast } from "@/hooks/use-toast";
 
 const LoginPage = () => {
+  const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const activationToken = searchParams.get("activation_token"); // Отримуємо токен з URL
+  const activationToken = searchParams.get("activation_token");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const toastMessage = localStorage.getItem("toast_message");
+    if (toastMessage) {
+      const { title, description, variant } = JSON.parse(toastMessage);
+      toast({ title, description, variant });
+      localStorage.removeItem("toast_message");
+    }
+  }, [toast]);
 
   useEffect(() => {
     if (activationToken) {
