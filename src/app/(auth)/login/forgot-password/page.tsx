@@ -1,19 +1,19 @@
 "use client";
 import { Container } from "@/components/shared/Container/Container";
-import { RegisterForm } from "./_components";
 import { useRouter } from "next/navigation";
 import { userService } from "@/services/user.service";
+import { ForgotPasswordForm } from "./_components/ForgotPasswordForm";
 
-const RegisterPage = () => {
+const ForgotPasswordPage = () => {
   const router = useRouter();
 
   return (
     <Container className={"min-h-screen flex items-center justify-center"}>
-      <RegisterForm
+      <ForgotPasswordForm
         onSubmit={(values) => {
-          userService.register(values.nickname, values.email, values.password);
+          userService.sendResetPasswordEmail(values.email);
           try {
-            router.replace("/register/confirm");
+            router.replace("/login/forgot-password/confirm");
           } catch (e) {
             router.refresh();
           }
@@ -23,4 +23,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default ForgotPasswordPage;
