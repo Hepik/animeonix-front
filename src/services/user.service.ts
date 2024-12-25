@@ -77,6 +77,14 @@ class UserService {
     return response;
   }
 
+  async sendResetPasswordEmail(email: string) {
+    const response = await api.post("/users/reset/password/email", null, {
+      params: { email },
+    });
+
+    return response;
+  }
+
   async verifyActivationToken(activationToken: string) {
     const response = await api
       .post("/users/account/activation", null, {
@@ -90,6 +98,30 @@ class UserService {
       });
 
     return response;
+  }
+
+  async verifyResetPasswordToken(resetPasswordToken: string) {
+    const response = await api
+      .post("/users/reset/password/token/verification", null, {
+        params: { reset_password_token: resetPasswordToken },
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((data) => data.data)
+      .catch((error) => {
+        console.error(error.response?.data);
+        throw new Error(error.response?.data?.detail || "Unknown error");
+      });
+
+    return response;
+  }
+
+  async resetPassword(resetPasswordToken: string, newPassword: string) {
+    const response = await api.post("/users/reset/password", {
+      reset_password_token: resetPasswordToken,
+      new_password: newPassword,
+    });
+
+    return response.data;
   }
 }
 

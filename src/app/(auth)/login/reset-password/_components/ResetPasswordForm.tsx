@@ -1,6 +1,6 @@
 "use client";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
@@ -14,55 +14,39 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-const formSchema = z.object({
-  username: z
-    .string()
-    // .email({ message: "Invalid email address" })
-    .min(1, { message: "Invalid username" }),
-  password: z.string().min(6, "Password is too short"),
-});
+const formSchema = z
+  .object({
+    password: z.string().min(6, "Password is too short"),
+    confirmpassword: z.string().min(6, "Password is too short"),
+  })
+  .refine((data) => data.password === data.confirmpassword, {
+    message: "Passwords don't match",
+    path: ["confirmpassword"],
+  });
 
-interface RegisterFormPropsType {
+interface ResetPasswordFormPropsType {
   onSubmit: (values: z.infer<typeof formSchema>) => void;
 }
 
-export const LoginForm: React.FC<RegisterFormPropsType> = ({ onSubmit }) => {
+export const ResetPasswordForm: React.FC<ResetPasswordFormPropsType> = ({
+  onSubmit,
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
       password: "",
+      confirmpassword: "",
     },
   });
 
   return (
     <Form {...form}>
-      <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black border border-black dark:border-white rounded-lg">
+      <div className="max-w-md w-full mx-auto border border-black dark:border-white rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-          Welcome Back!
+          Create new password
         </h2>
 
         <form className="mt-4" onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <LabelInputContainer className="mt-2">
-                    <Label htmlFor="username">username</Label>
-                    <Input
-                      id="username"
-                      placeholder="your username"
-                      type="username"
-                      {...field}
-                    />
-                  </LabelInputContainer>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="password"
@@ -83,23 +67,39 @@ export const LoginForm: React.FC<RegisterFormPropsType> = ({ onSubmit }) => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="confirmpassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <LabelInputContainer className="mt-2">
+                    <Label htmlFor="confirmpassword">Confirm password</Label>
+                    <Input
+                      id="confirmpassword"
+                      placeholder="••••••••"
+                      type="password"
+                      {...field}
+                    />
+                  </LabelInputContainer>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <button
             className="mt-3 bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
             type="submit"
           >
-            Sign in &rarr;
+            Create new password &rarr;
             <BottomGradient />
           </button>
+
           <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-2 h-[1px] w-full" />
-          <div className="flex justify-between">
-            <Link
-              href="/login/forgot-password"
-              className="text-blue-500 text-sm"
-            >
-              Forgot password?
-            </Link>
-            <Link href="/register" className="text-blue-500 text-sm">
-              Don&apos;t have account?
+
+          <div className="flex justify-end">
+            <Link href="/login" className="text-blue-500 text-sm">
+              &larr; Back to login
             </Link>
           </div>
         </form>
