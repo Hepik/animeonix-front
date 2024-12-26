@@ -56,7 +56,7 @@ const ReviewListItem: React.FC<TitleProps> = ({
               />
             </Link>
           </div>
-          <div className="ml-4 max-w-[800px] max-h-[150px]">
+          <div className="ml-4 max-w-[1400px] mr-8 max-h-[150px]">
             <p className="text-m line-clamp-5">{description}</p>
             <div className="flex justify-between">
               <Link href={`/tittle/${slug}`} className="text-blue-500">

@@ -79,7 +79,7 @@ export const ReviewList = () => {
   const totalPages = titlesData ? Math.ceil(titlesData.total / limit) : 0;
 
   return (
-    <div className="max-w-[1200px]">
+    <div className="w-full">
       {titlesData?.titles.map((title) => {
         const reaction = reactionsData?.find(
           (r) => r.title_id === title.id

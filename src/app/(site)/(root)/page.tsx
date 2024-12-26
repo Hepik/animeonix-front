@@ -2,7 +2,6 @@ import React from "react";
 import { Container } from "@/components/shared/Container/Container";
 import { CarouselHomePage } from "./_components/Carousel/carouselHomePage";
 import { ReviewList } from "./_components/ReviewList/reviewList";
-import { Filters } from "./_components/Filters/Filters";
 
 const HomePage = () => {
   return (
@@ -10,9 +9,6 @@ const HomePage = () => {
       <CarouselHomePage />
       <div className="flex lg:flex-row">
         <ReviewList />
-        <div className="hidden md:flex h-full pl-4">
-          <Filters />
-        </div>
       </div>
     </Container>
   );
