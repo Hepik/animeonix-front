@@ -70,7 +70,6 @@ const TittleSection: React.FC<TitleSectionProps> = ({ title }) => {
               alt="Bleach Image"
               priority
               fill={true}
-              sizes="20vw"
               style={{
                 objectFit: "cover",
               }}

@@ -18,7 +18,7 @@ interface TitleProps {
   onDislike: () => void;
 }
 
-const ReviewListItem: React.FC<TitleProps> = ({
+const TitleListItem: React.FC<TitleProps> = ({
   id,
   name,
   description,
@@ -49,7 +49,6 @@ const ReviewListItem: React.FC<TitleProps> = ({
                 src={image}
                 alt={`${name} Image`}
                 fill={true}
-                sizes="15vw"
                 style={{
                   objectFit: "cover",
                 }}
@@ -85,7 +84,7 @@ const ReviewListItem: React.FC<TitleProps> = ({
             </div>
           </div>
         </div>
-        <div className="hidden md:flex flex-col items-end space-y-1">
+        <div className="hidden md:flex flex-col items-end space-y-2">
           <div className="flex items-center space-x-1">
             <div className="text-sm">{likes}</div>
             <ThumbsUp
@@ -103,7 +102,7 @@ const ReviewListItem: React.FC<TitleProps> = ({
             />
             <div className="text-sm">{dislikes}</div>
           </div>
-          <div className="flex">
+          <div className="flex gap-1">
             {likes + dislikes > 0
               ? Number.isInteger((likes * 10) / (likes + dislikes))
                 ? ((likes * 10) / (likes + dislikes)).toFixed(0)
@@ -119,4 +118,4 @@ const ReviewListItem: React.FC<TitleProps> = ({
   );
 };
 
-export default ReviewListItem;
+export default TitleListItem;

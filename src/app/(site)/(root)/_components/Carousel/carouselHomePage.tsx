@@ -67,7 +67,6 @@ export const CarouselHomePage = () => {
                     alt={titles.name}
                     priority
                     fill={true}
-                    sizes="20vw"
                     style={{
                       objectFit: "cover",
                     }}

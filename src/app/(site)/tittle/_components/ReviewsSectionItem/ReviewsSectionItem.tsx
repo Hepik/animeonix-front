@@ -81,7 +81,6 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
               src={userInfo.avatar}
               alt="User avatar"
               fill={true}
-              sizes="15vw"
               style={{
                 objectFit: "cover",
               }}

@@ -181,7 +181,6 @@ const TittleSection = ({ slug }: { slug: string }) => {
               src={title.image}
               alt={title.name}
               fill={true}
-              sizes="20vw"
               style={{
                 objectFit: "cover",
               }}

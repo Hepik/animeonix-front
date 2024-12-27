@@ -21,7 +21,6 @@ const FormTittle: React.FC<ReviewSectionProps> = ({ data: titleData }) => {
               alt="Bleach Image"
               priority
               fill={true}
-              sizes="20vw"
               style={{
                 objectFit: "cover",
               }}

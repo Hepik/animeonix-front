@@ -22,7 +22,6 @@ export const Footer = () => {
               src="/linkedin.jpg"
               alt="LinkedIn Logo"
               fill={true}
-              sizes="20vw"
               style={{
                 objectFit: "cover",
               }}
