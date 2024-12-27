@@ -106,7 +106,7 @@ const TitleListItem: React.FC<TitleProps> = ({
             {likes + dislikes > 0
               ? Number.isInteger((likes * 10) / (likes + dislikes))
                 ? ((likes * 10) / (likes + dislikes)).toFixed(0)
-                : ((likes * 10) / (likes + dislikes)).toFixed(2)
+                : ((likes * 10) / (likes + dislikes)).toFixed(1)
               : "0"}
             /10
             <Star className="text-amber-300" />

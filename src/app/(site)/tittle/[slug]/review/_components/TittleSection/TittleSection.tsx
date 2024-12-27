@@ -117,7 +117,7 @@ const TittleSection: React.FC<TitleSectionProps> = ({ title }) => {
                 : (
                     (reactionsData[0]?.likes * 10) /
                     (reactionsData[0]?.likes + reactionsData[0]?.dislikes)
-                  ).toFixed(2)
+                  ).toFixed(1)
               : "0"}
             /10
             <Star className="text-amber-300" />
