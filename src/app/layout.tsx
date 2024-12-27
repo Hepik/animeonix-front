@@ -20,7 +20,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className={cn(inter.className, "overflow-x-hidden")}>
+      <body
+        className={cn(
+          inter.className,
+          "overflow-x-hidden bg-blue-100 dark:bg-gray-800/90"
+        )}
+      >
         <ClientProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Toaster />
