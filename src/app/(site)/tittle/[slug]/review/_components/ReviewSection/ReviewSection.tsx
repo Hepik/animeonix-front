@@ -125,7 +125,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
     <div className="flex flex-col gap-2 text-white">
       <div className="flex justify-between">
         <div className="flex items-center space-x-2 w-full">
-          <div className="relative h-[70px] w-[70px] rounded-full overflow-hidden bg-gray-200 mb-2">
+          <div className="relative h-[70px] w-[70px] rounded-full overflow-hidden bg-gray-200 mb-2 flex-shrink-0">
             <Link
               href={`/profile/${userInfo.username}`}
               className="relative block w-full h-full"
@@ -142,14 +142,14 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ review }) => {
           </div>
           <Link
             href={`/profile/${userInfo.username}`}
-            className="truncate max-w-full text-center text-xl hover:text-blue-500"
+            className="break-all w-full  text-center text-xl hover:text-blue-500"
           >
             {userInfo.username}
           </Link>
         </div>
 
         {user && (user.role === "admin" || user.id === review.user_id) && (
-          <div className="flex items-center">
+          <div className="flex items-center flex-shrink-0 ml-2">
             <Button
               variant="destructive"
               onClick={() => handleDelete(review.id)}
