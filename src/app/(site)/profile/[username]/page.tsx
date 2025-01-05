@@ -152,21 +152,20 @@ const ProfilePage: React.FC<ProfilePagePropsType> = ({
     <Container className="flex flex-col gap-4 flex-1 justify-center py-4 bg-gray-900 rounded-lg border border-black md:justify-start">
       <div className="flex flex-row p-6 text-white">
         {user && userInfo && user.id === userInfo.id ? (
-          <div className="flex gap-4">
-            <div className="relative h-[200px] w-[200px] rounded-full overflow-hidden bg-gray-200">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative h-[200px] w-[200px] rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
               <Image
                 src={userInfo.avatar}
                 alt="User avatar"
                 fill={true}
-                sizes="15vw"
                 style={{
                   objectFit: "cover",
                 }}
               />
             </div>
-            <div className="space-y-4">
-              <div className="text-3xl">{user.username}</div>
-              <div>{user.email}</div>
+            <div className="flex-col space-y-4 flex-grow">
+              <div className=" text-2xl break-all w-full">{user.username}</div>
+              <div className="break-all w-full">{user.email}</div>
               <div>
                 <Button
                   className="border border-white px-4"
@@ -280,19 +279,18 @@ const ProfilePage: React.FC<ProfilePagePropsType> = ({
             </div>
           </div>
         ) : (
-          <div className="flex gap-4">
-            <div className="relative h-[200px] w-[200px] rounded-full overflow-hidden bg-gray-200">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative h-[200px] w-[200px] rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
               <Image
                 src={userInfo.avatar}
                 alt="User avatar"
                 fill={true}
-                sizes="15vw"
                 style={{
                   objectFit: "cover",
                 }}
               />
             </div>
-            <div className="text-3xl">{userInfo.username}</div>
+            <div className="text-3xl break-all w-full">{userInfo.username}</div>
           </div>
         )}
       </div>
@@ -314,21 +312,25 @@ const ProfilePage: React.FC<ProfilePagePropsType> = ({
               onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
             />
           </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsAvatarDialogOpen(false)}
-              className="border border-white px-4"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAvatarUpload}
-              disabled={isUploadingAvatar || !avatarFile}
-              className="border border-white px-4"
-            >
-              {isUploadingAvatar ? "Uploading..." : "Save"}
-            </Button>
+          <DialogFooter className="flex-row space-x-2 justify-end">
+            <div>
+              <Button
+                variant="outline"
+                onClick={() => setIsAvatarDialogOpen(false)}
+                className="border border-white px-4 "
+              >
+                Cancel
+              </Button>
+            </div>
+            <div>
+              <Button
+                onClick={handleAvatarUpload}
+                disabled={isUploadingAvatar || !avatarFile}
+                className="border border-white px-4"
+              >
+                {isUploadingAvatar ? "Uploading..." : "Save"}
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

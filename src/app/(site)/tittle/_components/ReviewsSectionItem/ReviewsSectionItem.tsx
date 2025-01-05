@@ -81,7 +81,6 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
               src={userInfo.avatar}
               alt="User avatar"
               fill={true}
-              sizes="15vw"
               style={{
                 objectFit: "cover",
               }}
@@ -121,7 +120,7 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
           {likes + dislikes > 0
             ? Number.isInteger((likes * 10) / (likes + dislikes))
               ? ((likes * 10) / (likes + dislikes)).toFixed(0)
-              : ((likes * 10) / (likes + dislikes)).toFixed(2)
+              : ((likes * 10) / (likes + dislikes)).toFixed(1)
             : "0"}
           /10
           <Star className="text-amber-300" />

@@ -18,7 +18,7 @@ interface TitleProps {
   onDislike: () => void;
 }
 
-const ReviewListItem: React.FC<TitleProps> = ({
+const TitleListItem: React.FC<TitleProps> = ({
   id,
   name,
   description,
@@ -49,14 +49,13 @@ const ReviewListItem: React.FC<TitleProps> = ({
                 src={image}
                 alt={`${name} Image`}
                 fill={true}
-                sizes="15vw"
                 style={{
                   objectFit: "cover",
                 }}
               />
             </Link>
           </div>
-          <div className="ml-4 max-w-[800px] max-h-[150px]">
+          <div className="ml-4 max-w-[1400px] mr-8 max-h-[150px]">
             <p className="text-m line-clamp-5">{description}</p>
             <div className="flex justify-between">
               <Link href={`/tittle/${slug}`} className="text-blue-500">
@@ -85,7 +84,7 @@ const ReviewListItem: React.FC<TitleProps> = ({
             </div>
           </div>
         </div>
-        <div className="hidden md:flex flex-col items-end space-y-1">
+        <div className="hidden md:flex flex-col items-end space-y-2">
           <div className="flex items-center space-x-1">
             <div className="text-sm">{likes}</div>
             <ThumbsUp
@@ -103,11 +102,11 @@ const ReviewListItem: React.FC<TitleProps> = ({
             />
             <div className="text-sm">{dislikes}</div>
           </div>
-          <div className="flex">
+          <div className="flex gap-1">
             {likes + dislikes > 0
               ? Number.isInteger((likes * 10) / (likes + dislikes))
                 ? ((likes * 10) / (likes + dislikes)).toFixed(0)
-                : ((likes * 10) / (likes + dislikes)).toFixed(2)
+                : ((likes * 10) / (likes + dislikes)).toFixed(1)
               : "0"}
             /10
             <Star className="text-amber-300" />
@@ -119,4 +118,4 @@ const ReviewListItem: React.FC<TitleProps> = ({
   );
 };
 
-export default ReviewListItem;
+export default TitleListItem;

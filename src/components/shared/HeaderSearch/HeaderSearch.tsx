@@ -10,7 +10,11 @@ interface Title {
   slug: string;
 }
 
-export const HeaderSearch = () => {
+interface HeaderSearchPropsType {
+  onChange?: () => void;
+}
+
+export const HeaderSearch: React.FC<HeaderSearchPropsType> = ({ onChange }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Title[]>([]);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -38,6 +42,7 @@ export const HeaderSearch = () => {
     setSearchResults([]);
     setDropdownVisible(false);
     router.push(`/tittle/${slug}`);
+    onChange?.();
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -58,7 +63,7 @@ export const HeaderSearch = () => {
       <input
         type="text"
         placeholder="Search Titles"
-        className="bg-gray-800 px-4 py-2 rounded-lg text-white w-[200px] lg:w-[400px]"
+        className="bg-gray-800 px-4 py-2 rounded-lg text-white w-full"
         value={searchQuery}
         onChange={(e) => handleSearch(e.target.value)}
         onFocus={() => setDropdownVisible(searchResults.length > 0)}

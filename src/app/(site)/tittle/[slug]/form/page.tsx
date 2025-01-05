@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { Container } from "@/components/shared/Container/Container";
 import FormTittle from "./_components/FormTittle/FormTittle";
 import FormInput from "./_components/FormInput/FormInput";
@@ -29,6 +30,7 @@ const ReviewPage: React.FC<AnouncementPagePropsType> = ({
   params: { slug },
 }) => {
   const [title, setTitle] = useState<Title | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchReviews = async ({ slug }: { slug: string }) => {
@@ -46,6 +48,7 @@ const ReviewPage: React.FC<AnouncementPagePropsType> = ({
 
   const handleTitleInputSubmit = (content: string) => {
     addReview(content);
+    router.replace(`/tittle/${slug}`);
   };
   return (
     <Container className="flex flex-col gap-2 py-4 bg-gray-900 rounded-lg border border-black md:justify-start">

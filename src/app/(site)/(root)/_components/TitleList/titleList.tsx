@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
-import ReviewListItem from "../ReviewListItem/reviewListItem";
+import TitleListItem from "../TitleListItem/titleListItem";
 import { api } from "@/utils/api/api";
 
 interface Title {
@@ -42,7 +42,7 @@ const fetchReactions = async (titleIds: number[]) => {
   return response.data.reactions;
 };
 
-export const ReviewList = () => {
+export const TitleList = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
   const queryClient = useQueryClient();
@@ -79,7 +79,7 @@ export const ReviewList = () => {
   const totalPages = titlesData ? Math.ceil(titlesData.total / limit) : 0;
 
   return (
-    <div className="max-w-[1200px]">
+    <div className="w-full">
       {titlesData?.titles.map((title) => {
         const reaction = reactionsData?.find(
           (r) => r.title_id === title.id
@@ -90,7 +90,7 @@ export const ReviewList = () => {
         };
 
         return (
-          <ReviewListItem
+          <TitleListItem
             key={title.id}
             id={title.id}
             name={title.name}
