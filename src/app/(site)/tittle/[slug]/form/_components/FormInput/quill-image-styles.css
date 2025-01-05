@@ -1,0 +1,31 @@
+.ql-editor {
+  min-height: 550px;
+  height: 100%;
+}
+
+.quill-editor {
+  min-height: 550px;
+}
+
+.quill-editor img {
+  max-width: 100%;
+  max-height: 500px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.quill-editor img.quill-align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.quill-editor img.quill-align-left {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.quill-editor img.quill-align-right {
+  margin-left: auto;
+  margin-right: 0;
+}

@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+*.jpg
+*.png
 /.pnp
 .pnp.js
 .yarn/install-state.gz
@@ -19,6 +21,7 @@
 # misc
 .DS_Store
 *.pem
+.env
 
 # debug
 npm-debug.log*
