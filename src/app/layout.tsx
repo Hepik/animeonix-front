@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/shared/ThemeProvider/ThemeProvider";
@@ -26,12 +27,14 @@ export default function RootLayout({
           "overflow-x-hidden bg-blue-100 dark:bg-gray-800/90"
         )}
       >
-        <ClientProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <Toaster />
-            {children}
-          </ThemeProvider>
-        </ClientProvider>
+        <Suspense>
+          <ClientProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <Toaster />
+              {children}
+            </ThemeProvider>
+          </ClientProvider>
+        </Suspense>
       </body>
     </html>
   );
