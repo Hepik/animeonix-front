@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TitleListItem from "../TitleListItem/titleListItem";
 import { api } from "@/utils/api/api";
 
@@ -43,6 +43,11 @@ const fetchReactions = async (titleIds: number[]) => {
 };
 
 export const TitleList = () => {
+  useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_API_URL);
+  }, []);
+
+  console.log(process.env.NEXT_PUBLIC_API_URL);
   const [page, setPage] = useState(1);
   const limit = 10;
   const queryClient = useQueryClient();
