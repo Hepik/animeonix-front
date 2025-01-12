@@ -4,10 +4,9 @@ const nextConfig = {
     unoptimized: true,
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "localhost",
-        port: "8000",
-        pathname: "/images/**",
+        protocol: "https",
+        hostname: "api.animeonix.win",
+        pathname: "/static/**",
       },
     ],
   },
