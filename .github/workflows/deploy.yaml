@@ -26,5 +26,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          build-args: |
+            "NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}"
           push: true
           tags: ghcr.io/hepik/animeonix-front:latest
