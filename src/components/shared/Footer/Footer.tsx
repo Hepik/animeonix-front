@@ -4,6 +4,8 @@ import Link from "next/link";
 import React from "react";
 import Image from "next/image";
 
+const url = process.env.NEXT_PUBLIC_API_URL + "/static/linkedin.jpg";
+
 export const Footer = () => {
   return (
     <footer className="justify-between flex h-16 w-[100%] shrink-0 items-center px-6 bg-gray-900 text-white rounded-t-lg shadow-md">
@@ -19,7 +21,7 @@ export const Footer = () => {
         >
           <div className="relative w-7 h-7 ml-2">
             <Image
-              src="/linkedin.jpg"
+              src={url}
               alt="LinkedIn Logo"
               fill={true}
               style={{
