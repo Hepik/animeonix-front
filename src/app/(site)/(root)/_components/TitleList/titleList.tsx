@@ -43,11 +43,6 @@ const fetchReactions = async (titleIds: number[]) => {
 };
 
 export const TitleList = () => {
-  useEffect(() => {
-    console.log(process.env.NEXT_PUBLIC_API_URL);
-  }, []);
-
-  console.log(process.env.NEXT_PUBLIC_API_URL);
   const [page, setPage] = useState(1);
   const limit = 10;
   const queryClient = useQueryClient();

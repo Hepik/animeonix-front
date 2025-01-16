@@ -3,9 +3,7 @@ import axios, { AxiosError, AxiosRequestConfig } from "axios";
 console.log(process.env.NEXT_PUBLIC_API_URL);
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL
-    ? process.env.NEXT_PUBLIC_API_URL
-    : "https://google.com/",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
 api.interceptors.request.use((config) => {
