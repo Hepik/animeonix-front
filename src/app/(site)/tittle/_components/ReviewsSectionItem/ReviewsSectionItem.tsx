@@ -49,7 +49,7 @@ const ReviewsSectionItem: React.FC<ReviewProps> = ({
       if (!user_id) return;
       try {
         setIsLoading(true);
-        const response = await api.get<Users>(`/users/?id=${user_id}`);
+        const response = await api.get<Users>(`/users?id=${user_id}`);
         setUserInfo(response.data.users[0]);
       } catch (err: any) {
         console.error(err.message);
