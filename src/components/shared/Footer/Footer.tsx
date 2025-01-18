@@ -5,8 +5,7 @@ import React from "react";
 import Image from "next/image";
 
 const url_linkedin = process.env.NEXT_PUBLIC_API_URL + "/static/linkedin.jpg";
-// const url_github = process.env.NEXT_PUBLIC_API_URL + "/static/github.jpg";
-const url_github = "/github.jpg";
+const url_github = process.env.NEXT_PUBLIC_API_URL + "/static/github.jpg";
 
 export const Footer = () => {
   return (
