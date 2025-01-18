@@ -4,6 +4,7 @@
 /node_modules
 *.jpg
 *.png
+*.txt
 /.pnp
 .pnp.js
 .yarn/install-state.gz

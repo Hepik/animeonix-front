@@ -4,7 +4,9 @@ import Link from "next/link";
 import React from "react";
 import Image from "next/image";
 
-const url = process.env.NEXT_PUBLIC_API_URL + "/static/linkedin.jpg";
+const url_linkedin = process.env.NEXT_PUBLIC_API_URL + "/static/linkedin.jpg";
+// const url_github = process.env.NEXT_PUBLIC_API_URL + "/static/github.jpg";
+const url_github = "/github.jpg";
 
 export const Footer = () => {
   return (
@@ -21,8 +23,24 @@ export const Footer = () => {
         >
           <div className="relative w-7 h-7 ml-2">
             <Image
-              src={url}
+              src={url_linkedin}
               alt="LinkedIn Logo"
+              fill={true}
+              style={{
+                objectFit: "cover",
+              }}
+            />
+          </div>
+        </Link>
+        <Link
+          href="https://github.com/Hepik"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div className="relative w-7 h-7 ml-2">
+            <Image
+              src={url_github}
+              alt="Github Logo"
               fill={true}
               style={{
                 objectFit: "cover",
