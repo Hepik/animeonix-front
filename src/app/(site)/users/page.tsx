@@ -342,14 +342,20 @@ const UsersPage = () => {
               </div>
               <div className="flex flex-col">
                 <p>Role</p>
-                <Input
-                  id="role"
+                <Select
                   value={selectedUser.role}
-                  onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, role: e.target.value })
+                  onValueChange={(value) =>
+                    setSelectedUser({ ...selectedUser, role: value })
                   }
-                  placeholder="Enter role"
-                />
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="user">User</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <DialogFooter>
