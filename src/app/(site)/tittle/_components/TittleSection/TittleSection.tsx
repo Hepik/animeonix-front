@@ -88,6 +88,7 @@ const TittleSection = ({ slug }: { slug: string }) => {
 
   const handleSave = async () => {
     try {
+      let imageUrl;
       if (!selectedTitle) return;
       if (imageFile) {
         const formData = new FormData();
@@ -98,18 +99,19 @@ const TittleSection = ({ slug }: { slug: string }) => {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        let imageUrl = data;
-
-        if (imageUrl) {
-          await api.patch(`/titles/${selectedTitle.id}`, {
-            name: selectedTitle.name,
-            description: selectedTitle.description,
-            trailer: selectedTitle.trailer,
-            image: imageUrl,
-            slug: selectedTitle.slug,
-          });
-        }
+        imageUrl = data;
       }
+      const titleData = {
+        name: selectedTitle.name,
+        description: selectedTitle.description,
+        trailer: selectedTitle.trailer,
+        image: undefined,
+        slug: selectedTitle.slug,
+      };
+      if (imageUrl) {
+        titleData.image = imageUrl;
+      }
+      await api.patch(`/titles/${selectedTitle.id}`, titleData);
 
       alert("Title updated successfully");
       setSelectedTitle(null);
