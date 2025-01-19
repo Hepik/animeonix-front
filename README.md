@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# AnimeOnix Frontend
+
+The frontend for [AnimeOnix](https://animeonix.win/), providing an intuitive and responsive interface for exploring anime titles, writing reviews, and engaging with the community. Built with Next.js and TypeScript.
+
+---
+
+## Features
+
+- **Responsive Design**: Optimized for desktop and mobile devices.
+- **User-Friendly Interface**: Easy navigation and interaction.
+- **Integration with Backend API**: Fetch and display anime data, reviews, and ratings.
+- **Authentication**: User login and registration functionality.
+- **Search and Filters**: Quickly find anime titles with advanced filters.
+
+---
+
+## Requirements
+
+- **Node.js 20+**
+- **Docker**
+- Dependencies listed in `package.json` (automatically installed with Docker).
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Clone the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Hepik/animeonix-front.git
+cd animeonix-front
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copy the default `.default.env` file and update the values as needed:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```bash
+cp .default.env .env
+```
 
-## Learn More
+#### Example `.default.env` file:
 
-To learn more about Next.js, take a look at the following resources:
+```env
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Run Locally
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+To develop locally:
 
-## Deploy on Vercel
+1. **Install dependencies**:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+2. **Start the development server**:
+
+   ```bash
+   npm run dev
+   ```
+
+3. The app will be available at: `http://localhost:3000`.
+
+### Run with Docker
+
+To run the frontend in a containerized environment you need to visit backend repository
+
+https://github.com/Hepik/animeonix-back
+
+where is a docker-compose.yaml which starts all services (backend, database, Traefik, frontend).
+
+```bash
+docker-compose up -d
+```
+
+## Deployment
+
+The frontend is deployed using Docker and Traefik. Key deployment configurations:
+
+### Docker Compose Configuration
+
+It`s just a frontend part
+
+```yaml
+frontend:
+  image: ghcr.io/hepik/animeonix-front:latest
+  labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.frontend.rule=Host(`animeonix.win`)"
+    - "traefik.http.routers.frontend.entrypoints=websecure"
+    - "traefik.http.routers.frontend.tls=true"
+    - "traefik.http.routers.frontend.tls.certresolver=cloudflare"
+  depends_on:
+    - backend
+```
+
+---
+
+## Contributing
+
+1. Fork the repository.
+2. Create a new branch: `git checkout -b my-feature`.
+3. Commit your changes: `git commit -m 'Add some feature'`.
+4. Push to the branch: `git push origin my-feature`.
+5. Open a pull request.
+
+---
+
+## Additional Information
+
+For more details, visit the live website:
+[AnimeOnix](https://animeonix.win/)
+
+BackEnd repository: [animeonix-back](https://github.com/Hepik/animeonix-back)

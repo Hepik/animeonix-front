@@ -169,11 +169,21 @@ export const Header = () => {
                       className="flex w-full space-x-4"
                       onClick={() => setIsOpen(false)}
                     >
-                      <Button className="border border-white rounded-lg px-2 py-2 w-full">
-                        <Link href="/admin/titles">Titles</Link>
+                      <Button className="w-full">
+                        <Link
+                          className="border border-white rounded-lg px-2 py-2 w-full"
+                          href="/admin/titles"
+                        >
+                          Titles
+                        </Link>
                       </Button>
-                      <Button className="border border-white rounded-lg px-2 py-2 w-full">
-                        <Link href="/users">Users</Link>
+                      <Button className="w-full">
+                        <Link
+                          className="border border-white rounded-lg px-2 py-2 w-full"
+                          href="/users"
+                        >
+                          Users
+                        </Link>
                       </Button>
                     </div>
                   )}
